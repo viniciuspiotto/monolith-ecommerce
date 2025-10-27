@@ -1,0 +1,49 @@
+# log files
+*.log
+logs/
+
+# environments
+.env
+*.env
+application-local.properties
+application-local.yml
+
+# build folder
+target/
+
+# maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+# temporary maven release plugin
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# intelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# vscode
+.vscode/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
