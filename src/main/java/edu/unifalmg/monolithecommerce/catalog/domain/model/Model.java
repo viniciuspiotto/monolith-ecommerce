@@ -1,5 +1,7 @@
 package edu.unifalmg.monolithecommerce.catalog.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ModelStatus;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +19,7 @@ public class Model extends AbstractAggregateRoot<Model> {
     private final ModelId modelId;
     private String title;
     private String description;
-    private File thumbnail;
+    private Thumbnail thumbnail;
     private Money price;
     private UUID categoryId;
     private Rate averageRate;
@@ -25,7 +27,7 @@ public class Model extends AbstractAggregateRoot<Model> {
     private final List<Mesh> meshes = new ArrayList<>();
     private final List<Texture> textures = new ArrayList<>();
 
-    public static Model create(String title, String description, File thumbnail, Money price, UUID categoryId) {
+    public static Model create(String title, String description, Thumbnail thumbnail, Money price, UUID categoryId) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -107,7 +109,7 @@ public class Model extends AbstractAggregateRoot<Model> {
         this.description = description;
     }
 
-    public void changeThumbnail(File thumbnail) {
+    public void changeThumbnail(Thumbnail thumbnail) {
         if (thumbnail == null) {
             throw new IllegalArgumentException("Thumbnail cannot be null");
         }
@@ -126,5 +128,38 @@ public class Model extends AbstractAggregateRoot<Model> {
             throw new IllegalArgumentException("Category id cannot be null");
         }
         this.categoryId = categoryId;
+    }
+
+    public static Model rehydrate(
+            ModelId modelId,
+            String title,
+            String description,
+            Thumbnail thumbnail,
+            Money price,
+            UUID categoryId,
+            Rate averageRate,
+            ModelStatus status,
+            List<Mesh> meshes,
+            List<Texture> textures
+    ) {
+        Model model = Model.builder()
+                .modelId(modelId)
+                .title(title)
+                .description(description)
+                .thumbnail(thumbnail)
+                .price(price)
+                .categoryId(categoryId)
+                .averageRate(averageRate)
+                .status(status)
+                .build();
+
+        if (meshes != null) {
+            model.meshes.addAll(meshes);
+        }
+        if (textures != null) {
+            model.textures.addAll(textures);
+        }
+
+        return model;
     }
 }

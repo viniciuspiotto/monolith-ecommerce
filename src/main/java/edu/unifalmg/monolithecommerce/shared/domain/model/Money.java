@@ -1,8 +1,11 @@
 package edu.unifalmg.monolithecommerce.shared.domain.model;
 
+import lombok.Getter;
+
 import java.math.BigDecimal;
 import java.util.Currency;
 
+@Getter
 public class Money {
     private static final Currency BRL = Currency.getInstance("BRL");
 

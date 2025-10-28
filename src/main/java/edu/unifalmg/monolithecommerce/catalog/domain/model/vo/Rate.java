@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.domain.model;
+package edu.unifalmg.monolithecommerce.catalog.domain.model.vo;
 
 public record Rate(double value) {
     public Rate {
