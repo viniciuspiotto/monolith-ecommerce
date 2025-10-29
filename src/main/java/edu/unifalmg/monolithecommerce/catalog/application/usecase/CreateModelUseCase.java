@@ -1,7 +1,7 @@
 package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
-import edu.unifalmg.monolithecommerce.catalog.application.dto.CreateModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageResultDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.response.FileStorageResponse;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateModelPort;
@@ -17,7 +17,6 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +32,12 @@ public class CreateModelUseCase implements CreateModelPort {
     @Override
     @Transactional
     public ModelDTO execute(CreateModelCommand cmd) {
-        FileStorageResultDTO thumbnailDTO = fileStoragePort.save(
-                cmd.thumbnail(),
+        FileStorageResponse thumbnailDTO = fileStoragePort.save(
+                cmd.thumbnailFile(),
                 ThumbnailType.ALLOWED_MIMETYPES
         );
 
-        List<FileStorageResultDTO> meshesDTO = new ArrayList<>();
+        List<FileStorageResponse> meshesDTO = new ArrayList<>();
         for (CreateModelCommand.FileCommand meshCommand : cmd.meshFile()) {
             meshesDTO.add(fileStoragePort.save(
                     meshCommand,
@@ -46,7 +45,7 @@ public class CreateModelUseCase implements CreateModelPort {
             ));
         }
 
-        List<FileStorageResultDTO> texturesDTO = new ArrayList<>();
+        List<FileStorageResponse> texturesDTO = new ArrayList<>();
         for (CreateModelCommand.FileCommand textureCommand : cmd.textureFile()) {
             texturesDTO.add(fileStoragePort.save(
                     textureCommand,
@@ -69,7 +68,7 @@ public class CreateModelUseCase implements CreateModelPort {
                 cmd.categoryId()
         );
 
-        for (FileStorageResultDTO meshDTO : meshesDTO) {
+        for (FileStorageResponse meshDTO : meshesDTO) {
             Mesh mesh = Mesh.create(
                     meshDTO.publicUrl(),
                     meshDTO.originalFilename(),
@@ -78,7 +77,7 @@ public class CreateModelUseCase implements CreateModelPort {
             newModel.addMesh(mesh);
         }
 
-        for (FileStorageResultDTO textureDTO : texturesDTO) {
+        for (FileStorageResponse textureDTO : texturesDTO) {
             Texture texture = Texture.create(
                     textureDTO.publicUrl(),
                     textureDTO.originalFilename(),

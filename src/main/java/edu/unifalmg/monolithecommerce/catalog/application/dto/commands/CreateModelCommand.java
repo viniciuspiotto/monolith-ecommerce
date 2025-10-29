@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.application.dto;
+package edu.unifalmg.monolithecommerce.catalog.application.dto.commands;
 
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 
@@ -9,7 +9,7 @@ import java.util.UUID;
 public record CreateModelCommand(
         String title,
         String description,
-        FileCommand thumbnail,
+        FileCommand thumbnailFile,
         Money price,
         List<FileCommand> meshFile,
         List<FileCommand> textureFile,
