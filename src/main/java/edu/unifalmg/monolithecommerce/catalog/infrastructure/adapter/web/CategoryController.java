@@ -1,10 +1,13 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.web;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.CategoryDTO;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.CreateCategoryCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.GetCategoryByIdCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateCategoryCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.GetCategoryByIdCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.request.CreateCategoryRequest;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateCategoryPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.GetCategoryByIdPort;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper.CategoryRequestMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,41 +16,32 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/catalog/categories")
+@RequestMapping("categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CreateCategoryPort createCategoryUseCase;
     private final GetCategoryByIdPort getCategoryByIdUseCase;
+    private final CategoryRequestMapper requestMapper;
 
     @PostMapping
     public ResponseEntity<?> createCategory(
-            @RequestParam("name") String name,
-            @RequestParam("description") String description
+           @Valid @RequestBody CreateCategoryRequest request
     ) {
-        try{
-            CreateCategoryCommand command = new CreateCategoryCommand(
-                    name,
-                    description
-            );
-            CategoryDTO createdCategory = createCategoryUseCase.execute(command);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        CreateCategoryCommand cmd = requestMapper.toCommand(request);
 
+        CategoryDTO createdCategory = createCategoryUseCase.execute(cmd);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCategory(
             @PathVariable("id") UUID id
     ) {
-        try{
-            GetCategoryByIdCommand command = new GetCategoryByIdCommand(id);
-            CategoryDTO fundedCategory = getCategoryByIdUseCase.execute(command);
-            return ResponseEntity.status(HttpStatus.OK).body(fundedCategory);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        GetCategoryByIdCommand command = new GetCategoryByIdCommand(id);
 
+        CategoryDTO fundedCategory = getCategoryByIdUseCase.execute(command);
+
+        return ResponseEntity.status(HttpStatus.OK).body(fundedCategory);
     }
 }

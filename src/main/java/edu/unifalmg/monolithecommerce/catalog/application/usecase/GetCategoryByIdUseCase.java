@@ -1,7 +1,7 @@
 package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.CategoryDTO;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.GetCategoryByIdCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.GetCategoryByIdCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.CategoryMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.GetCategoryByIdPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepositoryPort;
