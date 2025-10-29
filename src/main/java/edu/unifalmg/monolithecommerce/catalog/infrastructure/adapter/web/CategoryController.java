@@ -1,18 +1,15 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.web;
 
-import edu.unifalmg.monolithecommerce.catalog.application.dto.CreateModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.category.CategoryDTO;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.category.CreateCategoryCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.category.GetCategoryByIdCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.category.CreateCategoryPort;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.category.GetCategoryByIdPort;
-import edu.unifalmg.monolithecommerce.catalog.application.usecase.category.GetCategoryByIdUseCase;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.CategoryDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.CreateCategoryCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.GetCategoryByIdCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateCategoryPort;
+import edu.unifalmg.monolithecommerce.catalog.application.port.in.GetCategoryByIdPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.UUID;
 
 @RestController

@@ -1,22 +1,16 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper.category;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper;
 
-import edu.unifalmg.monolithecommerce.catalog.domain.category.Category;
-import edu.unifalmg.monolithecommerce.catalog.domain.category.vo.CategoryId;
-import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
-import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.category.entity.CategoryEntity;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.CategoryId;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.entity.CategoryEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface CategoryPersistenceMapper {
     @Mapping(target = "id", ignore = true)
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "description", target = "description")
     CategoryEntity toEntity(Category category);
 
     default Category toDomain(CategoryEntity entity) {

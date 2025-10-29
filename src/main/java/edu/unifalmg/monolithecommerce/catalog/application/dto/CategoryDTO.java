@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.application.dto.category;
+package edu.unifalmg.monolithecommerce.catalog.application.dto;
 
 import java.util.UUID;
 

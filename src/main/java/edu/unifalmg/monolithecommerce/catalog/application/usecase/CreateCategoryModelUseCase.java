@@ -1,11 +1,11 @@
-package edu.unifalmg.monolithecommerce.catalog.application.usecase.category;
+package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
-import edu.unifalmg.monolithecommerce.catalog.application.dto.category.CategoryDTO;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.category.CreateCategoryCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.mapper.category.CategoryMapper;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.category.CreateCategoryPort;
-import edu.unifalmg.monolithecommerce.catalog.application.port.out.category.CategoryRepositoryPort;
-import edu.unifalmg.monolithecommerce.catalog.domain.category.Category;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.CategoryDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.CreateCategoryCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.mapper.CategoryMapper;
+import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateCategoryPort;
+import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepositoryPort;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

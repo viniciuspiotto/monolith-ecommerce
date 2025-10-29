@@ -1,13 +1,9 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.category;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence;
 
-import edu.unifalmg.monolithecommerce.catalog.application.port.out.category.CategoryRepositoryPort;
-import edu.unifalmg.monolithecommerce.catalog.domain.category.Category;
-import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper.ModelPersistenceMapper;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper.category.CategoryPersistenceMapper;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.ModelJpaRepository;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.category.entity.CategoryEntity;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.entity.ModelEntity;
+import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepositoryPort;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.mapper.CategoryPersistenceMapper;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.entity.CategoryEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

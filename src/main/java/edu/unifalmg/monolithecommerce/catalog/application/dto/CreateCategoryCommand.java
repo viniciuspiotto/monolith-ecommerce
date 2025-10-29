@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.application.dto.category;
+package edu.unifalmg.monolithecommerce.catalog.application.dto;
 
 public record CreateCategoryCommand(
         String name,

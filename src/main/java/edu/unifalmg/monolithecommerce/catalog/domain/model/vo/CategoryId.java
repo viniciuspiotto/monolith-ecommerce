@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.domain.category.vo;
+package edu.unifalmg.monolithecommerce.catalog.domain.model.vo;
 
 import java.util.UUID;
 

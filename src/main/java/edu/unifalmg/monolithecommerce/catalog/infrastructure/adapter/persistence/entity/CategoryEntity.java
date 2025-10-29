@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.category.entity;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
