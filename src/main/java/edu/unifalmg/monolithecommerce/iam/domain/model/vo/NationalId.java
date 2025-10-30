@@ -1,5 +1,9 @@
 package edu.unifalmg.monolithecommerce.iam.domain.model.vo;
 
+import br.com.caelum.stella.validation.CNPJValidator;
+import br.com.caelum.stella.validation.CPFValidator;
+import br.com.caelum.stella.validation.InvalidStateException;
+import com.sun.jdi.request.InvalidRequestStateException;
 import edu.unifalmg.monolithecommerce.iam.domain.model.enums.NationalIdType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,17 +16,47 @@ public class NationalId {
     private final NationalIdType type;
     private final String number;
 
-    public static NationalId create (String number, NationalIdType type) {
+    public static NationalId create (String number) {
         String nationalNumber = number.replaceAll("\\D", "");
-        return new NationalId(type, nationalNumber);
+        if(!isValid(nationalNumber)){
+            throw new IllegalArgumentException("The National number is not valid");
+        }
+        return new NationalId(getType(nationalNumber), nationalNumber);
     }
 
-    private static boolean isValidCpf(String cpf) {
-        if (cpf == null || !cpf.matches("\\d{11}")){
+    private static NationalIdType getType(String number){
+        if (number == null || number.isEmpty()) {
+            throw new IllegalArgumentException("The National number is not with the correct type");
+        }
+        if(number.length() == 11){
+            return NationalIdType.CPF;
+        }
+        if(number.length() == 14){
+            return NationalIdType.CNPJ;
+        }
+        throw new IllegalArgumentException("The National number is not with the correct type");
+    }
+
+    public static boolean isValid(String number) {
+
+        if (number == null || number.isEmpty()) {
             return false;
         }
-        return true;
-    }
 
+        CPFValidator cpfValidator = new CPFValidator();
+        CNPJValidator cnpjValidator = new CNPJValidator();
+
+        try {
+            cpfValidator.assertValid(number);
+            return true;
+        } catch (InvalidRequestStateException e1) {
+            try {
+                cnpjValidator.assertValid(number);
+                return true;
+            } catch (InvalidStateException e2) {
+                return false;
+            }
+        }
+    }
 
 }
