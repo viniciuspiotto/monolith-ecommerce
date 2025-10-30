@@ -59,6 +59,8 @@ public class LocalStorageFileAdapter implements FileStoragePort {
 
             String publicUrl = this.baseUrl + uniqueFilename;
 
+            new StorageTransactionSynchronization(destination).register();
+
             return new FileStorageResponse(
                     cmd.originalFilename(),
                     publicUrl,
