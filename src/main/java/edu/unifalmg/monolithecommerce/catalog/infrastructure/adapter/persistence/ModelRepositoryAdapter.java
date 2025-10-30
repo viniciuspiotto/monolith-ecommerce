@@ -11,13 +11,14 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ModelRepositoryAdapter implements ModelRepositoryPort {
 
-    private final ModelJpaRepository JpaRepository;
+    private final ModelJpaRepository jpaRepository;
     private final ModelPersistenceMapper modelPersistenceMapper;
 
     @Override
-    public Model save(Model model) {
+    public Model create(Model model) {
         ModelEntity entityToSave = modelPersistenceMapper.toEntity(model);
-        ModelEntity savedEntity = JpaRepository.save(entityToSave);
+
+        ModelEntity savedEntity = jpaRepository.save(entityToSave);
         return modelPersistenceMapper.toDomain(savedEntity);
     }
 }

@@ -14,9 +14,9 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ThumbnailType;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Texture;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,7 +86,7 @@ public class CreateModelUseCase implements CreateModelPort {
             newModel.addTexture(texture);
         }
 
-        Model savedModel = modelRepositoryPort.save(newModel);
+        Model savedModel = modelRepositoryPort.create(newModel);
 
         return modelMapper.toDTO(savedModel);
     }

@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage.utils;
 
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.support.TransactionSynchronization;

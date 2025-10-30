@@ -3,6 +3,9 @@ package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.response.FileStorageResponse;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage.utils.MimeTypeValidationStrategy;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage.utils.StorageFileUtils;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.storage.utils.StorageTransactionSynchronization;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -23,13 +26,16 @@ public class LocalStorageFileAdapter implements FileStoragePort {
     private final Path rootLocation;
     private final String baseUrl;
     private static final Tika TIKA_DETECTOR = new Tika();
+    private final MimeTypeValidationStrategy validationStrategy;
 
     public LocalStorageFileAdapter(
             @Value("${storage.local.path:./uploads/files}") String path,
-            @Value("${storage.local.base-url:http://localhost:8080/files/") String baseUrl
+            @Value("${storage.local.base-url:http://localhost:8080/files/}") String baseUrl,
+            MimeTypeValidationStrategy validationStrategy
     ) {
         this.rootLocation = Paths.get(path);
         this.baseUrl = baseUrl;
+        this.validationStrategy = validationStrategy;
 
         try {
             Files.createDirectories(rootLocation);
@@ -42,16 +48,25 @@ public class LocalStorageFileAdapter implements FileStoragePort {
     public FileStorageResponse save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes) {
         try (InputStream inputStream = new BufferedInputStream(cmd.contentStream())) {
             inputStream.mark(1024 * 1024);
+
             String detectedMimeType = TIKA_DETECTOR.detect(inputStream);
             inputStream.reset();
 
-            if (detectedMimeType == null || !allowedMimeTypes.contains(detectedMimeType.toLowerCase())) {
+            MimeTypeValidationStrategy.ValidationResult validation = validationStrategy.validate(
+                    detectedMimeType,
+                    cmd.originalFilename(),
+                    allowedMimeTypes
+            );
+
+            if (!validation.isAllowed()) {
                 throw new IllegalArgumentException(
-                        "Invalid file type. Only " + allowedMimeTypes + " are allowed. Detected: " + detectedMimeType
+                        "Invalid file type. Allowed: " + allowedMimeTypes +
+                                ". Detected: " + detectedMimeType +
+                                ". Filename: " + cmd.originalFilename()
                 );
             }
 
-            String extension = getExtension(cmd.originalFilename());
+            String extension = StorageFileUtils.getExtension(cmd.originalFilename());
             String uniqueFilename = UUID.randomUUID() + extension;
             Path destination = rootLocation.resolve(uniqueFilename);
 
@@ -64,17 +79,10 @@ public class LocalStorageFileAdapter implements FileStoragePort {
             return new FileStorageResponse(
                     cmd.originalFilename(),
                     publicUrl,
-                    detectedMimeType
+                    validation.finalMimeType()
             );
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file.", e);
         }
-    }
-
-    private String getExtension(String filename) {
-        if (filename == null || !filename.contains(".")) {
-            return "";
-        }
-        return filename.substring(filename.lastIndexOf("."));
     }
 }
