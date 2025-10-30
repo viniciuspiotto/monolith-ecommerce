@@ -11,8 +11,8 @@ public record CreateModelCommand(
         String description,
         FileCommand thumbnailFile,
         Money price,
-        List<FileCommand> meshFile,
-        List<FileCommand> textureFile,
+        List<FileCommand> meshFiles,
+        List<FileCommand> textureFiles,
         UUID categoryId
 ) {
     public record FileCommand(

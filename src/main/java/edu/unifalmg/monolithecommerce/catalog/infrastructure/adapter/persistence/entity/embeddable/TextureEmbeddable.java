@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class TextureEmbeddable {
+    private String uniqueName;
     private String url;
     private String filename;
 

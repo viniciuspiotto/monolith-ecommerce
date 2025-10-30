@@ -74,25 +74,31 @@ public class Model extends AbstractAggregateRoot<Model> {
         meshes.add(mesh);
     }
 
-    public void removeMesh(int index){
-        if (meshes.isEmpty() || meshes.get(index) == null){
-            throw new IllegalArgumentException("Mesh index out of bounds");
+    public void removeMesh(Mesh mesh){
+        if (meshes.size() == 1) {
+            throw new IllegalArgumentException("Model must have at least 1 mesh");
         }
-        meshes.remove(index);
+        if (meshes.isEmpty() || mesh == null){
+            throw new IllegalArgumentException("Mesh cannot be empty or null");
+        }
+        meshes.remove(mesh);
     }
 
     public void addTexture(Texture texture) {
         if(texture == null){
-            throw new IllegalArgumentException("texture cannot be null");
+            throw new IllegalArgumentException("Texture cannot be null");
         }
         textures.add(texture);
     }
 
-    public void removeTexture(int index){
-        if (textures.isEmpty() || textures.get(index) == null){
-            throw new IllegalArgumentException("Texture index out of bounds");
+    public void removeTexture(Texture texture){
+        if (textures.size() == 1) {
+            throw new IllegalArgumentException("Model must have at least 1 texture");
         }
-        textures.remove(index);
+        if (textures.isEmpty() || texture == null){
+            throw new IllegalArgumentException("Texture cannot be empty or null");
+        }
+        textures.remove(texture);
     }
 
     public void renameModel(String title) {

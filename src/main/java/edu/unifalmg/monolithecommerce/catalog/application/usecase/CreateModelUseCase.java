@@ -38,7 +38,7 @@ public class CreateModelUseCase implements CreateModelPort {
         );
 
         List<FileStorageResponse> meshesDTO = new ArrayList<>();
-        for (CreateModelCommand.FileCommand meshCommand : cmd.meshFile()) {
+        for (CreateModelCommand.FileCommand meshCommand : cmd.meshFiles()) {
             meshesDTO.add(fileStoragePort.save(
                     meshCommand,
                     MeshType.ALLOWED_MIMETYPES
@@ -46,7 +46,7 @@ public class CreateModelUseCase implements CreateModelPort {
         }
 
         List<FileStorageResponse> texturesDTO = new ArrayList<>();
-        for (CreateModelCommand.FileCommand textureCommand : cmd.textureFile()) {
+        for (CreateModelCommand.FileCommand textureCommand : cmd.textureFiles()) {
             texturesDTO.add(fileStoragePort.save(
                     textureCommand,
                     TextureType.ALLOWED_MIMETYPES
@@ -54,6 +54,7 @@ public class CreateModelUseCase implements CreateModelPort {
         }
 
         Thumbnail thumbnail = Thumbnail.create(
+                thumbnailDTO.uniqueName(),
                 thumbnailDTO.url(),
                 thumbnailDTO.filename(),
                 thumbnailDTO.type()
@@ -70,6 +71,7 @@ public class CreateModelUseCase implements CreateModelPort {
 
         for (FileStorageResponse meshDTO : meshesDTO) {
             Mesh mesh = Mesh.create(
+                    meshDTO.uniqueName(),
                     meshDTO.url(),
                     meshDTO.filename(),
                     meshDTO.type()
@@ -79,6 +81,7 @@ public class CreateModelUseCase implements CreateModelPort {
 
         for (FileStorageResponse textureDTO : texturesDTO) {
             Texture texture = Texture.create(
+                    textureDTO.uniqueName(),
                     textureDTO.url(),
                     textureDTO.filename(),
                     textureDTO.type()

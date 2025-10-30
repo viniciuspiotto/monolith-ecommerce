@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.application.dto.request;
 
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.web.validation.AllFilesNotEmpty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,14 +26,18 @@ public record CreateModelRequest(
         UUID categoryId,
 
         @NotNull(message = "Thumbnail file is required")
-        MultipartFile thumbnailFile,
+        @Size(min = 1, max = 1, message = "Exactly one thumbnail file must be provided")
+        @AllFilesNotEmpty
+        List<MultipartFile> thumbnailFile,
 
         @NotNull(message = "At least one mesh file is required")
         @Size(min = 1, message = "At least one mesh file is required")
+        @AllFilesNotEmpty
         List<MultipartFile> meshFiles,
 
         @NotNull(message = "At least one texture file is required")
         @Size(min = 1, message = "At least one texture file is required")
+        @AllFilesNotEmpty
         List<MultipartFile> textureFiles
 ) {
 }

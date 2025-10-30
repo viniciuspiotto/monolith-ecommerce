@@ -29,7 +29,7 @@ public class LocalStorageFileAdapter implements FileStoragePort {
     private final MimeTypeValidationStrategy validationStrategy;
 
     public LocalStorageFileAdapter(
-            @Value("${storage.local.path:./uploads/files}") String path,
+            @Value("${storage.local.path:uploads/files}") String path,
             @Value("${storage.local.base-url:http://localhost:8080/files/}") String baseUrl,
             MimeTypeValidationStrategy validationStrategy
     ) {
@@ -77,12 +77,32 @@ public class LocalStorageFileAdapter implements FileStoragePort {
             new StorageTransactionSynchronization(destination).register();
 
             return new FileStorageResponse(
+                    uniqueFilename,
                     cmd.filename(),
                     publicUrl,
                     validation.finalMimeType()
             );
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file.", e);
+        }
+    }
+
+    @Override
+    public void delete(String uniqueName) {
+        if (uniqueName == null || uniqueName.isBlank()) {
+            return;
+        }
+
+        try {
+            Path fileToDelete = this.rootLocation.resolve(uniqueName).normalize();
+
+            if (!fileToDelete.startsWith(this.rootLocation)) {
+                throw new IllegalArgumentException("Invalid filename. Path traversal attempt detected.");
+            }
+
+            Files.deleteIfExists(fileToDelete);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to delete file: " + uniqueName, e);
         }
     }
 }
