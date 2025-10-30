@@ -68,9 +68,9 @@ public interface ModelPersistenceMapper {
             return null;
         }
         return Thumbnail.create(
-                embeddable.getFileUrl(),
-                embeddable.getOriginalFilename(),
-                embeddable.getMimeType()
+                embeddable.getUrl(),
+                embeddable.getFilename(),
+                embeddable.getType().getMimeType()
         );
     }
 
@@ -80,9 +80,9 @@ public interface ModelPersistenceMapper {
         }
 
         return Mesh.create(
-                embeddable.getFileUrl(),
-                embeddable.getOriginalFilename(),
-                embeddable.getMimeType()
+                embeddable.getUrl(),
+                embeddable.getFilename(),
+                embeddable.getType().getMimeType()
         );
     }
 
@@ -92,30 +92,19 @@ public interface ModelPersistenceMapper {
         }
 
         return Texture.create(
-                embeddable.getFileUrl(),
-                embeddable.getOriginalFilename(),
-                embeddable.getMimeType()
+                embeddable.getUrl(),
+                embeddable.getFilename(),
+                embeddable.getType().getMimeType()
         );
     }
 
-    default UUID map(ModelId modelId) {
-        return modelId.id();
-    }
 
     default ModelId map(UUID id) {
         return new ModelId(id);
     }
 
-    default BigDecimal map(Money money) {
-        return money.getAmount();
-    }
-
     default Money map(BigDecimal decimal) {
         return new Money(decimal);
-    }
-
-    default double map(Rate rate) {
-        return rate.value();
     }
 
     default Rate map(double value) {

@@ -9,14 +9,13 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Texture {
 
-    private final String fileUrl;
+    private final String url;
     private final TextureType type;
-    private final String originalFilename;
-    private final String mimeType;
+    private final String filename;
 
-    public static Texture create(String fileUrl, String originalFilename, String detectedMimeType) {
+    public static Texture create(String url, String filename, String detectedMimeType) {
         TextureType textureType = TextureType.fromMimeType(detectedMimeType);
 
-        return new Texture(fileUrl, textureType, originalFilename, detectedMimeType);
+        return new Texture(url, textureType, filename);
     }
 }

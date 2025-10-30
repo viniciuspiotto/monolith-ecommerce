@@ -19,8 +19,8 @@ public record ModelDTO (
         List<FileDTO> textures) {
 
     public record FileDTO(
-            String name,
+            String filename,
             String url,
-            String mimeType
+            String type
     ) {}
 }

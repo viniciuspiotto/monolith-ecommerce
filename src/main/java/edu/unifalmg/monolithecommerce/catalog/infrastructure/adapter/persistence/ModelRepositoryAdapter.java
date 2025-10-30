@@ -19,6 +19,7 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
         ModelEntity entityToSave = modelPersistenceMapper.toEntity(model);
 
         ModelEntity savedEntity = jpaRepository.save(entityToSave);
+
         return modelPersistenceMapper.toDomain(savedEntity);
     }
 }

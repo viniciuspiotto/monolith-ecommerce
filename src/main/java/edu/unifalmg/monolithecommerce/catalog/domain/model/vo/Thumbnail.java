@@ -8,15 +8,13 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Thumbnail {
-
-    private final String fileUrl;
+    private final String url;
     private final ThumbnailType type;
-    private final String originalFilename;
-    private final String mimeType;
+    private final String filename;
 
-    public static Thumbnail create(String fileUrl, String originalFilename, String detectedMimeType) {
+    public static Thumbnail create(String url, String filename, String detectedMimeType) {
         ThumbnailType thumbnailType = ThumbnailType.fromMimeType(detectedMimeType);
 
-        return new Thumbnail(fileUrl, thumbnailType, originalFilename, detectedMimeType);
+        return new Thumbnail(url, thumbnailType, filename);
     }
 }

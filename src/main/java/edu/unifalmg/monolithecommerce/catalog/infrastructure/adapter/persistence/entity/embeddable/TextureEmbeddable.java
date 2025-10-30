@@ -15,9 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class TextureEmbeddable {
-    private String fileUrl;
-    private String originalFilename;
-    private String mimeType;
+    private String url;
+    private String filename;
 
     @Enumerated(EnumType.STRING)
     private TextureType type;

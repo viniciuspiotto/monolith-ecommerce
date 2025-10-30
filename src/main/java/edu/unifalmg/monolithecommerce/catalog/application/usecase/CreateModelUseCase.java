@@ -54,9 +54,9 @@ public class CreateModelUseCase implements CreateModelPort {
         }
 
         Thumbnail thumbnail = Thumbnail.create(
-                thumbnailDTO.publicUrl(),
-                thumbnailDTO.originalFilename(),
-                thumbnailDTO.mimeType()
+                thumbnailDTO.url(),
+                thumbnailDTO.filename(),
+                thumbnailDTO.type()
         );
 
 
@@ -70,18 +70,18 @@ public class CreateModelUseCase implements CreateModelPort {
 
         for (FileStorageResponse meshDTO : meshesDTO) {
             Mesh mesh = Mesh.create(
-                    meshDTO.publicUrl(),
-                    meshDTO.originalFilename(),
-                    meshDTO.mimeType()
+                    meshDTO.url(),
+                    meshDTO.filename(),
+                    meshDTO.type()
             );
             newModel.addMesh(mesh);
         }
 
         for (FileStorageResponse textureDTO : texturesDTO) {
             Texture texture = Texture.create(
-                    textureDTO.publicUrl(),
-                    textureDTO.originalFilename(),
-                    textureDTO.mimeType()
+                    textureDTO.url(),
+                    textureDTO.filename(),
+                    textureDTO.type()
             );
             newModel.addTexture(texture);
         }

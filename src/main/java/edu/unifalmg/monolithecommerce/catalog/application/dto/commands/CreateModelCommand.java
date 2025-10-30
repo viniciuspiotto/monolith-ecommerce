@@ -16,7 +16,7 @@ public record CreateModelCommand(
         UUID categoryId
 ) {
     public record FileCommand(
-            String originalFilename,
+            String filename,
             InputStream contentStream
     ) {}
 }

@@ -19,19 +19,10 @@ public interface ModelMapper {
     @Mapping(source = "textures", target = "textures")
     ModelDTO toDTO(Model model);
 
-    @Mapping(source = "originalFilename", target = "name")
-    @Mapping(source = "fileUrl", target = "url")
-    @Mapping(source = "mimeType", target = "mimeType")
     ModelDTO.FileDTO thumbnailToFileDTO(Thumbnail thumbnail);
 
-    @Mapping(source = "originalFilename", target = "name")
-    @Mapping(source = "fileUrl", target = "url")
-    @Mapping(source = "mimeType", target = "mimeType")
     ModelDTO.FileDTO meshToFileDTO(Mesh mesh);
 
-    @Mapping(source = "originalFilename", target = "name")
-    @Mapping(source = "fileUrl", target = "url")
-    @Mapping(source = "mimeType", target = "mimeType")
     ModelDTO.FileDTO textureToFileDTO(Texture texture);
 
     default double rateToDouble(Rate rate) {

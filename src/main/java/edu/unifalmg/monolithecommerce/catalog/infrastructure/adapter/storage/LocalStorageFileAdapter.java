@@ -54,7 +54,7 @@ public class LocalStorageFileAdapter implements FileStoragePort {
 
             MimeTypeValidationStrategy.ValidationResult validation = validationStrategy.validate(
                     detectedMimeType,
-                    cmd.originalFilename(),
+                    cmd.filename(),
                     allowedMimeTypes
             );
 
@@ -62,11 +62,11 @@ public class LocalStorageFileAdapter implements FileStoragePort {
                 throw new IllegalArgumentException(
                         "Invalid file type. Allowed: " + allowedMimeTypes +
                                 ". Detected: " + detectedMimeType +
-                                ". Filename: " + cmd.originalFilename()
+                                ". Filename: " + cmd.filename()
                 );
             }
 
-            String extension = StorageFileUtils.getExtension(cmd.originalFilename());
+            String extension = StorageFileUtils.getExtension(cmd.filename());
             String uniqueFilename = UUID.randomUUID() + extension;
             Path destination = rootLocation.resolve(uniqueFilename);
 
@@ -77,7 +77,7 @@ public class LocalStorageFileAdapter implements FileStoragePort {
             new StorageTransactionSynchronization(destination).register();
 
             return new FileStorageResponse(
-                    cmd.originalFilename(),
+                    cmd.filename(),
                     publicUrl,
                     validation.finalMimeType()
             );
