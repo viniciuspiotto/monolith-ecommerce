@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.jpa;
 
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

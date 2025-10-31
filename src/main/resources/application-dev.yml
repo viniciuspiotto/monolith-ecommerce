@@ -9,6 +9,9 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  elasticsearch:
+    uris: http://localhost:9200
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:

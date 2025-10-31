@@ -1,9 +1,9 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.jpa;
 
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.ModelRepositoryPort;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.mapper.ModelPersistenceMapper;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.ModelEntity;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.mapper.ModelPersistenceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

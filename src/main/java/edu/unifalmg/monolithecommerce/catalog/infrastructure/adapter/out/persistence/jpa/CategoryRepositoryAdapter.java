@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.jpa;
 
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepositoryPort;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
