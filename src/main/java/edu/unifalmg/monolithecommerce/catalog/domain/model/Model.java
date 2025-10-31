@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ModelStatus;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
@@ -9,6 +10,7 @@ import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -169,5 +171,15 @@ public class Model extends AbstractAggregateRoot<Model> {
         return model;
     }
 
+    public void notifyModelUpdated() {
+        this.registerEvent(new ModelUpdatedEvent(this));
+    }
 
+    public Collection<Object> getDomainEvents() {
+        return this.domainEvents();
+    }
+
+    public void cleanDomainEvents() {
+        super.domainEvents().clear();
+    }
 }

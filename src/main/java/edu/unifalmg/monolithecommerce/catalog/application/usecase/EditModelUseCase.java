@@ -65,6 +65,8 @@ public class EditModelUseCase implements EditModelPort {
             updateTextures(existingModel, cmd.textureFilenamesToRemove(), cmd.newTextureFiles());
         }
 
+        existingModel.notifyModelUpdated();
+
         Model savedModel = modelRepositoryPort.update(existingModel);
 
         return modelMapper.toDTO(savedModel);

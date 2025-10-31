@@ -6,10 +6,11 @@ import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persist
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.embeddable.ThumbnailEmbeddable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "catalog_models")
@@ -46,4 +47,21 @@ public class ModelEntity {
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "catalog_model_textures", joinColumns = @JoinColumn(name = "model_id"))
     private List<TextureEmbeddable> textures;
+
+    @Transient
+    private final transient List<Object> domainEvents = new ArrayList<>();
+
+    @DomainEvents
+    public Collection<Object> getDomainEvents() {
+        return Collections.unmodifiableList(domainEvents);
+    }
+
+    @AfterDomainEventPublication
+    public void clearDomainEvents() {
+        this.domainEvents.clear();
+    }
+
+    public void setDomainEvents(Collection<Object> events) {
+        this.domainEvents.addAll(events);
+    }
 }

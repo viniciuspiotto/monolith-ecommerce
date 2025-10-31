@@ -89,6 +89,8 @@ public class CreateModelUseCase implements CreateModelPort {
             newModel.addTexture(texture);
         }
 
+        newModel.notifyModelUpdated();
+
         Model savedModel = modelRepositoryPort.create(newModel);
 
         return modelMapper.toDTO(savedModel);

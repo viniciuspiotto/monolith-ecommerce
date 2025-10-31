@@ -7,8 +7,10 @@ import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persist
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.embeddable.TextureEmbeddable;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.embeddable.ThumbnailEmbeddable;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,6 +26,11 @@ public interface ModelPersistenceMapper {
     @Mapping(source = "textures", target = "textures")
     @Mapping(source = "meshes", target = "meshes")
     ModelEntity toEntity(Model model);
+
+    @AfterMapping
+    default void transferDomainEvents(@MappingTarget ModelEntity entity, Model model) {
+        entity.setDomainEvents(model.getDomainEvents());
+    }
 
     ThumbnailEmbeddable thumbnailToEmbeddable(Thumbnail thumbnail);
     MeshEmbeddable meshToEmbeddable(Mesh mesh);
