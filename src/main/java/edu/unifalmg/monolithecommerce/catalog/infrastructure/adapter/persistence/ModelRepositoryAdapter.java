@@ -7,6 +7,9 @@ import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.persistence
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class ModelRepositoryAdapter implements ModelRepositoryPort {
@@ -21,5 +24,20 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
         ModelEntity savedEntity = jpaRepository.save(entityToSave);
 
         return modelPersistenceMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<Model> findById(UUID id) {
+        Optional<ModelEntity> optionalEntity = jpaRepository.findById(id);
+
+        return optionalEntity.map(modelPersistenceMapper::toDomain);
+    }
+
+    @Override
+    public Model update(Model model) {
+        ModelEntity entityToUpdate = modelPersistenceMapper.toEntity(model);
+        ModelEntity updatedEntity = jpaRepository.save(entityToUpdate);
+
+        return modelPersistenceMapper.toDomain(updatedEntity);
     }
 }

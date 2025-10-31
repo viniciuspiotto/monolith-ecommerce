@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.shared.infraestructure.config;
 
+import edu.unifalmg.monolithecommerce.shared.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -39,5 +40,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleGenericException(Exception e) {
         Map<String, String> errorResponse = Map.of("error", "An unexpected internal server error occurred.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException e) {
+        Map<String, String> errorResponse = Map.of("error", e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

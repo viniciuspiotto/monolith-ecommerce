@@ -7,4 +7,5 @@ import java.util.Set;
 
 public interface FileStoragePort {
     FileStorageResponse save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes);
+    void delete(String filename);
 }
