@@ -3,7 +3,7 @@ package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.response.FileStorageResponse;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.EditModelPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
@@ -75,7 +75,7 @@ public class EditModelUseCase implements EditModelPort {
             fileStoragePort.delete(existingModel.getThumbnail().getFilename());
         }
 
-        FileStorageResponse thumbnailDTO = fileStoragePort.save(
+        FileStorageDTO thumbnailDTO = fileStoragePort.save(
                 newThumbnailFile,
                 ThumbnailType.ALLOWED_MIMETYPES
         );
@@ -108,7 +108,7 @@ public class EditModelUseCase implements EditModelPort {
 
         if (newMeshFiles != null) {
             for (CreateModelCommand.FileCommand meshCommand : newMeshFiles) {
-                FileStorageResponse meshDTO = fileStoragePort.save(
+                FileStorageDTO meshDTO = fileStoragePort.save(
                         meshCommand,
                         MeshType.ALLOWED_MIMETYPES
                 );
@@ -141,7 +141,7 @@ public class EditModelUseCase implements EditModelPort {
 
         if (newTextureFiles != null ) {
             for (CreateModelCommand.FileCommand textureCommand : newTextureFiles) {
-                FileStorageResponse textureDTO = fileStoragePort.save(
+                FileStorageDTO textureDTO = fileStoragePort.save(
                         textureCommand,
                         TextureType.ALLOWED_MIMETYPES
                 );

@@ -2,8 +2,8 @@ package edu.unifalmg.monolithecommerce.catalog.application.mapper;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.request.CreateModelRequest;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.request.EditModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
