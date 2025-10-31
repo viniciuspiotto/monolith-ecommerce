@@ -1,6 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.application.dto.request;
 
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.web.validation.AllFilesNotEmpty;
+import edu.unifalmg.monolithecommerce.shared.infraestructure.web.validation.AllFilesNotEmpty;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

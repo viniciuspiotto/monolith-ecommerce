@@ -1,8 +1,11 @@
 package edu.unifalmg.monolithecommerce.shared.infraestructure.config;
 
-import edu.unifalmg.monolithecommerce.shared.exception.ResourceNotFoundException;
+import edu.unifalmg.monolithecommerce.shared.infraestructure.dto.ErrorResponse;
+import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -13,38 +16,43 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException e) {
-        Map<String, String> errorResponse = Map.of("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
 
-        Map<String, String> fieldErrors = new HashMap<>();
-
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            fieldErrors.put(error.getField(), error.getDefaultMessage());
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String key = (error instanceof FieldError) ? ((FieldError) error).getField() : error.getObjectName();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(key, errorMessage);
         });
 
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("message", "Validation failed. Please check the fields.");
-        responseBody.put("fields", fieldErrors);
-
-        return responseBody;
+        return new ErrorResponse("Validation failed. Please check the fields.", errors);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception e) {
-        Map<String, String> errorResponse = Map.of("error", "An unexpected internal server error occurred.");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    public ErrorResponse handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex) {
+        String provided = (ex.getContentType() != null) ? ex.getContentType().toString() : "N/A";
+
+        Map<String, String> details = Map.of(
+                "provided_content_type", provided,
+                "supported_content_types", ex.getSupportedMediaTypes().toString()
+        );
+
+        return new ErrorResponse("Media type not supported.", details);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException e) {
-        Map<String, String> errorResponse = Map.of("error", e.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
+        ErrorResponse body = new ErrorResponse(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
+
+        ErrorResponse body = new ErrorResponse("An unexpected internal server error occurred.");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 }

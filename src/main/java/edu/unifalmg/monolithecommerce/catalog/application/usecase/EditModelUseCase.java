@@ -15,7 +15,7 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ThumbnailType;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Texture;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
-import edu.unifalmg.monolithecommerce.shared.exception.ResourceNotFoundException;
+import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
