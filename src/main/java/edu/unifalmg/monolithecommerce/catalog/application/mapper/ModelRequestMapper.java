@@ -38,6 +38,7 @@ public interface ModelRequestMapper {
     @Mapping(source = "request.newTextureFiles", target = "newTextureFiles")
     EditModelCommand toCommand(EditModelRequest request, UUID id);
 
+    @Mapping(source = "q", target = "stringText")
     ModelSearchCommand toCommand(SearchModelRequest request);
 
     default Money bigDecimalToMoney(BigDecimal value) {

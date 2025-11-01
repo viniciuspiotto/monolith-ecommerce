@@ -21,7 +21,7 @@ public class SearchModelsUseCase implements SearchModelsPort {
     public Page<ModelSearchDTO> execute(ModelSearchCommand cmd, Pageable pageable) {
 
         log.info("Initiating model search with query: '{}' and category: '{}'",
-                cmd.textQuery(), cmd.categoryId());
+                cmd.stringText(), cmd.categoryId());
 
         Page<ModelSearchDTO> results = searchModelsGateway.search(cmd, pageable);
 

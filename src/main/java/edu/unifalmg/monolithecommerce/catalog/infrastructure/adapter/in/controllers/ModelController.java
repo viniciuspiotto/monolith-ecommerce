@@ -58,20 +58,8 @@ public class ModelController {
 
     @GetMapping("/search")
     public ResponseEntity<Page<ModelSearchDTO>> searchModels(
-            @RequestParam(value = "q", required = false) String textQuery,
-            @RequestParam(value = "categoryId", required = false) UUID categoryId,
-            @RequestParam(value = "minPrice", required = false) Double minPrice,
-            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
-            @RequestParam(value = "minRate", required = false) Double minRate,
-            @PageableDefault(size = 20) Pageable pageable) {
-
-        SearchModelRequest request = new SearchModelRequest(
-                textQuery,
-                categoryId,
-                minPrice,
-                maxPrice,
-                minRate
-        );
+            @Valid SearchModelRequest request,
+            @PageableDefault(size = 12) Pageable pageable) {
 
         ModelSearchCommand command = requestMapper.toCommand(request);
 

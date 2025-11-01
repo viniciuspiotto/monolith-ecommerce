@@ -31,7 +31,7 @@ public class ModelSearchAdapter implements SearchModelsGateway {
 
         BoolQuery.Builder boolQueryBuilder = new BoolQuery.Builder();
 
-        addTextQuery(boolQueryBuilder, cmd.textQuery());
+        addTextQuery(boolQueryBuilder, cmd.stringText());
 
         addTermFilter(boolQueryBuilder, cmd.categoryId());
         addRateFilter(boolQueryBuilder, cmd.minRate());
