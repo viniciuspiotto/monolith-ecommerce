@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,5 +55,21 @@ public class GlobalExceptionHandler {
 
         ErrorResponse body = new ErrorResponse("An unexpected internal server error occurred.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String paramName = ex.getName();
+        assert ex.getRequiredType() != null;
+        String requiredType = ex.getRequiredType().getSimpleName();
+        Object invalidValue = ex.getValue();
+
+        String message = String.format(
+                "Parameter '%s' is invalid. The value '%s' don't must be converted to '%s'.",
+                paramName, invalidValue, requiredType
+        );
+
+        return new ErrorResponse(message);
     }
 }

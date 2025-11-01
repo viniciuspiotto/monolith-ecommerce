@@ -2,6 +2,7 @@ package edu.unifalmg.monolithecommerce.catalog.application.mapper;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.GetModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.ModelSearchCommand;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
@@ -40,6 +41,8 @@ public interface ModelRequestMapper {
 
     @Mapping(source = "q", target = "stringText")
     ModelSearchCommand toCommand(SearchModelRequest request);
+
+    GetModelCommand toCommand(UUID id);
 
     default Money bigDecimalToMoney(BigDecimal value) {
         if (value == null) {
