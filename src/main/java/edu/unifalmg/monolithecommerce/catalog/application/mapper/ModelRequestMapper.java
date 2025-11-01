@@ -2,8 +2,10 @@ package edu.unifalmg.monolithecommerce.catalog.application.mapper;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.ModelSearchCommand;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -35,6 +37,8 @@ public interface ModelRequestMapper {
     @Mapping(source = "request.textureFilenamesToRemove", target = "textureFilenamesToRemove")
     @Mapping(source = "request.newTextureFiles", target = "newTextureFiles")
     EditModelCommand toCommand(EditModelRequest request, UUID id);
+
+    ModelSearchCommand toCommand(SearchModelRequest request);
 
     default Money bigDecimalToMoney(BigDecimal value) {
         if (value == null) {

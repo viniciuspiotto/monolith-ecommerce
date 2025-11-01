@@ -21,8 +21,8 @@ public record ModelSearchDocument(
         @Field(type = FieldType.Text, name = "description")
         String description,
 
-        @Field(type = FieldType.Double, name = "price")
-        BigDecimal priceAmount,
+        @Field(type = FieldType.Scaled_Float, name = "price", scalingFactor = 100)
+        BigDecimal price,
 
         @Field(type = FieldType.Keyword, name = "category_id")
         UUID categoryId,

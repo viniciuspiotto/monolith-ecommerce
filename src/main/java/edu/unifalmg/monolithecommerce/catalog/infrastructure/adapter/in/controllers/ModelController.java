@@ -1,15 +1,22 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.controllers;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelSearchDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.ModelSearchCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelRequestMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateModelPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.EditModelPort;
+import edu.unifalmg.monolithecommerce.catalog.application.port.in.SearchModelsPort;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +30,7 @@ import java.util.UUID;
 public class ModelController {
     private final CreateModelPort createModelUseCase;
     private final EditModelPort editModelUseCase;
+    private final SearchModelsPort searchModelsPort;
     private final ModelRequestMapper requestMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -46,5 +54,29 @@ public class ModelController {
         ModelDTO updatedModel = editModelUseCase.execute(command);
 
         return ResponseEntity.ok(updatedModel);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<ModelSearchDTO>> searchModels(
+            @RequestParam(value = "q", required = false) String textQuery,
+            @RequestParam(value = "categoryId", required = false) UUID categoryId,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "minRate", required = false) Double minRate,
+            @PageableDefault(size = 20) Pageable pageable) {
+
+        SearchModelRequest request = new SearchModelRequest(
+                textQuery,
+                categoryId,
+                minPrice,
+                maxPrice,
+                minRate
+        );
+
+        ModelSearchCommand command = requestMapper.toCommand(request);
+
+        Page<ModelSearchDTO> results = searchModelsPort.execute(command, pageable);
+
+        return ResponseEntity.ok(results);
     }
 }
