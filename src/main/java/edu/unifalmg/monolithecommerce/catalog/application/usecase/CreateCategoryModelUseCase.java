@@ -33,5 +33,4 @@ public class CreateCategoryModelUseCase implements CreateCategoryPort {
         Category savedCategory = categoryRepository.save(category);
         return categoryMapper.toDTO(savedCategory);
     }
-
 }

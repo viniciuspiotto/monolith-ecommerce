@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.messengers;
 
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelRemovedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.elastic.ModelSearchRepository;
@@ -18,7 +19,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class CatalogSearchIndexerListener {
+public class ModelEventsListener {
 
     private final ModelSearchRepository modelSearchRepository;
     private final ModelSearchMapper modelSearchMapper;
@@ -28,8 +29,8 @@ public class CatalogSearchIndexerListener {
     @TransactionalEventListener
     public void handleModelUpdatedEvent(ModelUpdatedEvent event) {
         try {
-            ModelEntity entity = modelJpaRepository.findById(event.getModelId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Model not found: " + event.getModelId()));
+            ModelEntity entity = modelJpaRepository.findById(event.modelId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Model not found: " + event.modelId()));
 
             Model model = persistenceMapper.toDomain(entity);
 
@@ -39,7 +40,18 @@ public class CatalogSearchIndexerListener {
             log.info("Model indexed successfully: {}", document.id());
 
         } catch (Exception e) {
-            log.error("Failed to index model with ID [{}]: {}", event.getModelId(), e.getMessage(), e);
+            log.error("Failed to index model with ID [{}]: {}", event.modelId(), e.getMessage(), e);
+        }
+    }
+
+    @TransactionalEventListener
+    public void handleModelRemovedEvent(ModelRemovedEvent event) {
+        try {
+            modelSearchRepository.deleteById(event.modelId().toString());
+
+            log.info("Model removed from index successfully: {}", event.modelId());
+        } catch (Exception e) {
+            log.error("Failed to remove model from index with ID [{}]: {}", event.modelId(), e.getMessage(), e);
         }
     }
 }

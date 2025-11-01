@@ -20,8 +20,8 @@ public class SearchModelsUseCase implements SearchModelsPort {
     @Override
     public Page<ModelSearchDTO> execute(ModelSearchCommand cmd, Pageable pageable) {
 
-        log.info("Initiating model search with query: '{}' and category: '{}'",
-                cmd.stringText(), cmd.categoryId());
+        log.info("Initiating model search with query: '{}'",
+                cmd.toString());
 
         Page<ModelSearchDTO> results = searchModelsGateway.search(cmd, pageable);
 

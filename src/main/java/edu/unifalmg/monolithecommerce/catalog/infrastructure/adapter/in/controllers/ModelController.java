@@ -2,15 +2,9 @@ package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.control
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelSearchDTO;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.GetModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.ModelSearchCommand;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.*;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelRequestMapper;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateModelPort;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.EditModelPort;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.GetModelPort;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.SearchModelsPort;
+import edu.unifalmg.monolithecommerce.catalog.application.port.in.*;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
@@ -34,6 +28,7 @@ public class ModelController {
     private final EditModelPort editModelUseCase;
     private final SearchModelsPort searchModelsPort;
     private final GetModelPort getModelPort;
+    private final RemoveModelPort removeModelPort;
 
     private final ModelRequestMapper requestMapper;
 
@@ -76,9 +71,20 @@ public class ModelController {
     public ResponseEntity<ModelDTO> getModel(
             @PathVariable UUID id
     ) {
-        GetModelCommand command = requestMapper.toCommand(id);
+        GetModelCommand command = requestMapper.toGetCommand(id);
 
         ModelDTO model = getModelPort.execute(command);
+
+        return ResponseEntity.ok(model);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ModelDTO> deleteModel(
+            @PathVariable UUID id
+    ) {
+        RemoveModelCommand command = requestMapper.toRemoveCommand(id);
+
+        ModelDTO model = removeModelPort.execute(command);
 
         return ResponseEntity.ok(model);
     }

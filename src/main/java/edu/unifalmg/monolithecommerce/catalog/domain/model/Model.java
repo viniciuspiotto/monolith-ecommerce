@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelRemovedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ModelStatus;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
@@ -172,14 +173,14 @@ public class Model extends AbstractAggregateRoot<Model> {
     }
 
     public void notifyModelUpdated() {
-        this.registerEvent(new ModelUpdatedEvent(this));
+        this.registerEvent(new ModelUpdatedEvent(this.modelId.id()));
+    }
+
+    public void notifyModelRemoved() {
+        this.registerEvent(new ModelRemovedEvent(this.modelId.id()));
     }
 
     public Collection<Object> getDomainEvents() {
         return this.domainEvents();
-    }
-
-    public void cleanDomainEvents() {
-        super.domainEvents().clear();
     }
 }
