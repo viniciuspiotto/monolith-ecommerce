@@ -12,6 +12,14 @@ spring:
   elasticsearch:
     uris: http://localhost:9200
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      repositories:
+        enabled: true
+      password: monolithPassword123
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:

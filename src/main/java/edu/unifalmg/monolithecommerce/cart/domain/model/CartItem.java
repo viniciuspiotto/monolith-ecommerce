@@ -1,12 +1,12 @@
 package edu.unifalmg.monolithecommerce.cart.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
     private final ModelId modelId;
     private int quantity;
@@ -14,7 +14,7 @@ public class CartItem {
 
     protected CartItem(ModelId productId, Money unitPrice, int quantity) {
         if (productId == null || unitPrice == null) {
-            throw new IllegalArgumentException("Model and price must not be null");
+            throw new IllegalArgumentException("Model or price must not be null");
         }
         if  (quantity <= 0) {
             throw new IllegalArgumentException("Quantity must be greater than zero");
@@ -46,5 +46,9 @@ public class CartItem {
     @Override
     public int hashCode() {
         return modelId.hashCode();
+    }
+
+    public static CartItem rehydrate(UUID modelId, Money unitPrice, int quantity) {
+        return new CartItem(new ModelId(modelId), unitPrice, quantity);
     }
 }

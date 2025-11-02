@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 @Getter
 public class Money {
@@ -21,13 +22,11 @@ public class Money {
         this.currency = BRL;
     }
 
-    private Money(BigDecimal amount, Currency currency) {
-        this.amount = amount;
-        this.currency = currency;
-    }
-
     public Money add(Money other) {
-        return new Money(amount.add(other.amount), currency);
+        if (!Objects.equals(this.currency, other.currency)) {
+            throw new IllegalArgumentException("Cannot add Money of different currencies");
+        }
+        return new Money(this.amount.add(other.amount));
     }
 
     public Money multiply(int quantity) {

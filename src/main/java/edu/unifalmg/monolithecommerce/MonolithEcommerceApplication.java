@@ -11,5 +11,4 @@ public class MonolithEcommerceApplication {
     public static void main(String[] args) {
         SpringApplication.run(MonolithEcommerceApplication.class, args);
     }
-
 }
