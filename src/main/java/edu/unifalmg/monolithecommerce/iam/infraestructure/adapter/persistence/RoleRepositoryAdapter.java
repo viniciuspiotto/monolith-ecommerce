@@ -25,11 +25,20 @@ public class RoleRepositoryAdapter implements RoleRepositoryPort {
 
     @Override
     public Role findById(UUID id) {
-        Optional<RoleEntity> categoryFound = JpaRepository.findById(id);
-        if (categoryFound.isEmpty()) {
+        Optional<RoleEntity> roleFound = JpaRepository.findById(id);
+        if (roleFound.isEmpty()) {
             throw new RuntimeException("Role with this id not found");
         }
-        return rolePersistenceMapper.toDomain(categoryFound.get());
+        return rolePersistenceMapper.toDomain(roleFound.get());
+    }
+
+    @Override
+    public Role findByName(String name) {
+        Optional<RoleEntity> roleFound = JpaRepository.findByName(name);
+        if (roleFound.isEmpty()) {
+            throw new RuntimeException("Role with this name not found");
+        }
+        return rolePersistenceMapper.toDomain(roleFound.get());
     }
 
     @Override

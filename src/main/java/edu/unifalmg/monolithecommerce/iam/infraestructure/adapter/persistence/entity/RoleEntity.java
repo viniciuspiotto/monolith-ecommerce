@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.persistence.entity;
 
+import edu.unifalmg.monolithecommerce.iam.domain.model.Role;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +23,12 @@ public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
     private String name;
     private String description;
+
+    public RoleEntity (UUID id){
+        this.id = id;
+    }
+
+
 }
