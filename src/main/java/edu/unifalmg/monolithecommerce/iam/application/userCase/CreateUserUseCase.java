@@ -2,23 +2,26 @@ package edu.unifalmg.monolithecommerce.iam.application.userCase;
 
 import edu.unifalmg.monolithecommerce.iam.application.DTO.UserDTO;
 import edu.unifalmg.monolithecommerce.iam.application.DTO.commands.CreateUserCommand;
-import edu.unifalmg.monolithecommerce.iam.application.mapper.RoleMapper;
 import edu.unifalmg.monolithecommerce.iam.application.mapper.UserMapper;
 import edu.unifalmg.monolithecommerce.iam.application.port.in.CreateUserPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.RoleRepositoryPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.UserRepositoryPort;
+import edu.unifalmg.monolithecommerce.iam.domain.model.Role;
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Address;
+import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Email;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.NationalId;
+import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Password;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateUserUserCase implements CreateUserPort {
+public class CreateUserUseCase implements CreateUserPort {
 
     private final UserRepositoryPort userRepository;
+    private final RoleRepositoryPort roleRepository;
     private final UserMapper userMapper;
 
     @Override
@@ -44,17 +47,26 @@ public class CreateUserUserCase implements CreateUserPort {
                 cmd.nationalId()
         );
 
+        if(!cmd.password().equals(cmd.confirmPassword())){
+            throw new IllegalArgumentException("The passwords don't match");
+        }
+
+        Password password = Password.create(cmd.password());
+        Email email = Email.create(cmd.email());
+
+        Role role = roleRepository.findByName("CUSTOMER");
+
         User user = User.create(
                 cmd.name(),
                 cmd.lastName(),
-                cmd.password(),
-                cmd.email(),
-                cmd.roleId(),
+                email,
+                password,
+                role,
                 address,
                 nationalId
         );
 
-        User savedUser = userRepository.create(user);
+        User savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);
 
     }

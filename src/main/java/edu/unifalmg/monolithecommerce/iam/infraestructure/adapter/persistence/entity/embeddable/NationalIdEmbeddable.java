@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Embeddable
 public class NationalIdEmbeddable {
-    private String nationalId;
+    private String nationalNumber;
     @Enumerated(EnumType.STRING)
     private NationalIdType type;
 }

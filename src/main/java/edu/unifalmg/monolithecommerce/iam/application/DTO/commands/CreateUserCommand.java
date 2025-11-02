@@ -11,7 +11,7 @@ public record CreateUserCommand (
         String lastName,
         String email,
         String password,
-        UUID roleId,
+        String confirmPassword,
         String nationalId,
         AddressCommand address
 ){
