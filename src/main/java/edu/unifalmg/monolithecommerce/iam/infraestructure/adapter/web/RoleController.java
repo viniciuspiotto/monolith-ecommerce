@@ -7,11 +7,13 @@ import edu.unifalmg.monolithecommerce.iam.application.DTO.requests.CreateRoleReq
 import edu.unifalmg.monolithecommerce.iam.application.port.in.CreateRolePort;
 import edu.unifalmg.monolithecommerce.iam.application.port.in.GetRoleByIdPort;
 import edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.mapper.RoleRequestMapper;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -25,6 +27,8 @@ public class RoleController {
     private final RoleRequestMapper roleRequestMapper;
 
     @PostMapping
+    @PermitAll
+    @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<?> createRole(
             @Valid @RequestBody CreateRoleRequest request
     ) {
@@ -33,8 +37,9 @@ public class RoleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
+    @PreAuthorize("hasRole('ARTIST')")
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCategory(
+    public ResponseEntity<?> getRoleById(
             @PathVariable("id") UUID id
     ) {
         GetRoleByIdCommand command = new GetRoleByIdCommand(id);
