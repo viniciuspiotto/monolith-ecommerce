@@ -1,4 +1,10 @@
 package edu.unifalmg.monolithecommerce.iam.application.DTO.requests;
 
-public record CreateRoleRequest (String name, String description) {
+import jakarta.validation.constraints.NotBlank;
+
+public record CreateRoleRequest (
+        @NotBlank(message = "Name is required")
+        String name,
+        @NotBlank(message = "Description is required")
+        String description) {
 }
