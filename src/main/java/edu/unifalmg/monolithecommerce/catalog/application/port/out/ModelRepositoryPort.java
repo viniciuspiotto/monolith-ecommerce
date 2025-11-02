@@ -9,5 +9,5 @@ public interface ModelRepositoryPort {
     Model create(Model model);
     Optional<Model> findById(UUID id);
     Model update(Model model);
-    Model delete(Model model);
+    void delete(Model model);
 }

@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.mapper;
 
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.ModelEntity;

@@ -44,14 +44,11 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
     }
 
     @Override
-    public Model delete(Model model) {
+    public void delete(Model model) {
         log.info("Events to remove {}", model.getDomainEvents());
 
         ModelEntity entityToRemove = modelPersistenceMapper.toEntity(model);
 
         jpaRepository.delete(entityToRemove);
-
-        return modelPersistenceMapper.toDomain(entityToRemove);
     }
-
 }
