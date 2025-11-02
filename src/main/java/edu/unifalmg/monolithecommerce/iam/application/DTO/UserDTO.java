@@ -4,11 +4,12 @@ package edu.unifalmg.monolithecommerce.iam.application.DTO;
 import java.util.UUID;
 
 public record UserDTO (
+    UUID userId,
     String name,
     String lastName,
     String email,
     String password,
-    UUID roleId,
+    RoleDTO role,
     String nationalId,
     AddressDTO address
 ){
@@ -22,4 +23,12 @@ public record UserDTO (
                 String neighborhood,
                 String complement
         ){}
+
+        public record RoleDTO(
+                UUID roleId,
+                String name,
+                String description
+        ){
+        }
+
 }

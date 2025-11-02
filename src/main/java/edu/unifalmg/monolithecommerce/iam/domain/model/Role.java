@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class Role {
+
     private RoleId roleId;
     private String name;
     private String description;

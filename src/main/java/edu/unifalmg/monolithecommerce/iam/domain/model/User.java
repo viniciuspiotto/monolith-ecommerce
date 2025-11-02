@@ -1,8 +1,6 @@
 package edu.unifalmg.monolithecommerce.iam.domain.model;
 
-import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Address;
-import edu.unifalmg.monolithecommerce.iam.domain.model.vo.NationalId;
-import edu.unifalmg.monolithecommerce.iam.domain.model.vo.UserId;
+import edu.unifalmg.monolithecommerce.iam.domain.model.vo.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,13 +14,13 @@ public class User {
     private final UserId userId;
     private String name;
     private String lastName;
-    private String email;
-    private String password;
+    private Email email;
+    private Password password;
     private Address address;
-    private UUID roleId;
+    private Role role;
     private NationalId nationalId;
 
-    public static User create(String name, String lastName, String email, String password, UUID roleId, Address address, NationalId nationalId) {
+    public static User create(String name, String lastName, Email email, Password password, Role role, Address address, NationalId nationalId) {
 
         if(name == null || name.isEmpty()){
             throw new IllegalArgumentException("Name cannot be null or empty");
@@ -32,11 +30,7 @@ public class User {
             throw new IllegalArgumentException("Last cannot be null or empty");
         }
 
-        isValidEmail(email);
-
-        isValidPassword(password);
-
-        if(roleId == null){
+        if(role == null){
             throw new IllegalArgumentException("Role cannot be null");
         }
 
@@ -53,26 +47,82 @@ public class User {
                 .lastName(lastName)
                 .email(email)
                 .password(password)
-                .roleId(roleId)
+                .role(role)
                 .address(address)
                 .nationalId(nationalId)
                 .build();
     }
 
-    public static void isValidEmail(String email){
-        if(email == null || email.isEmpty()){
-            throw new IllegalArgumentException("email cannot be null or empty");
+    public void updateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name cannot be null or blank");
         }
-        if (!email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
-            throw new IllegalArgumentException("Email address is not in a valid format");
-        }
+        this.name = name;
     }
-    public static void isValidPassword(String password){
-        if(password == null || password.isEmpty()){
-            throw new IllegalArgumentException("Password cannot be null or empty");
+
+    public void updateLastName(String lastName) {
+        if (lastName == null || lastName.isBlank()) {
+            throw new IllegalArgumentException("Last name cannot be null or blank");
         }
-        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")) {
-            throw new IllegalArgumentException("Password is not strong enough");
-        }
+        this.lastName = lastName;
     }
+
+    public void updateEmail(Email email) {
+        if (email == null) {
+            throw new IllegalArgumentException("Email cannot be null");
+        }
+        this.email = email;
+    }
+
+    public void updatePassword(Password password) {
+        if (password == null) {
+            throw new IllegalArgumentException("Password cannot be null");
+        }
+        this.password = password;
+    }
+
+    public void updateAddress(Address address) {
+        if (address == null) {
+            throw new IllegalArgumentException("Address cannot be null");
+        }
+        this.address = address;
+    }
+
+    public void updateRoleId(Role role) {
+        if (role == null) {
+            throw new IllegalArgumentException("Role cannot be null");
+        }
+        this.role = role;
+    }
+
+    public void updateNationalId(NationalId nationalId) {
+        if (nationalId == null) {
+            throw new IllegalArgumentException("NationalId cannot be null");
+        }
+        this.nationalId = nationalId;
+    }
+
+    public static User rehydrate(
+            UserId userId,
+            String name,
+            String lastName,
+            Email email,
+            Password password,
+            Role role,
+            Address address,
+            NationalId nationalId
+    ) {
+        return User.builder()
+                .userId(userId)
+                .name(name)
+                .lastName(lastName)
+                .email(email)
+                .password(password)
+                .role(role)
+                .address(address)
+                .nationalId(nationalId)
+                .build();
+    }
+
+
 }

@@ -14,7 +14,7 @@ import lombok.Getter;
 public class NationalId {
 
     private final NationalIdType type;
-    private final String number;
+    private final String nationalNumber;
 
     public static NationalId create (String number) {
         String nationalNumber = number.replaceAll("\\D", "");
