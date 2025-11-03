@@ -11,7 +11,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ObjectFactory;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface CartPersistenceMapper {
@@ -26,10 +29,22 @@ public interface CartPersistenceMapper {
     CartItem toDomainItem(RedisCartItem entityItem);
 
     @ObjectFactory
-    default Cart createDomainCart(RedisCart entity) {
-        return new Cart(
-                entity.getCustomerId() != null ? entity.getCustomerId() : null,
-                entity.getCustomerId() == null ? entity.getSessionId() : null
+    default Cart createDomain(RedisCart entity) {
+        Set<CartItem> domainItems = new HashSet<>();
+        if (entity.getItems() != null) {
+            domainItems = entity.getItems().stream()
+                    .map(this::createDomainItem)
+                    .collect(Collectors.toSet());
+        }
+
+        return Cart.rehydrate(
+                entity.getCartId(),
+                entity.getCustomerId(),
+                entity.getSessionId(),
+                domainItems,
+                entity.getStatus(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
         );
     }
 
@@ -50,6 +65,9 @@ public interface CartPersistenceMapper {
     }
 
     default UUID map(ModelId modelId) {
+        if (modelId == null) {
+            return null;
+        }
         return modelId.id();
     }
 }

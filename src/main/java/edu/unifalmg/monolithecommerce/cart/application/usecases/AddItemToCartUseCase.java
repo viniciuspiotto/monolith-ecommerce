@@ -36,8 +36,6 @@ public class AddItemToCartUseCase implements AddItemToCartPort {
 
         Cart cart = findOrCreateCart(command.customerId(), command.sessionId());
 
-        log.info("cart {}", cart);
-
         cart.addItem(command.modelId(), unitPrice, command.quantity());
 
         Cart savedCart = cartRepositoryPort.save(cart);

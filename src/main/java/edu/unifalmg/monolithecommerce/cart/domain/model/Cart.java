@@ -112,4 +112,34 @@ public class Cart extends AbstractAggregateRoot<Cart> {
     private void touch() {
         this.updatedAt = Instant.now();
     }
+
+    private Cart(
+            UUID cartId,
+            UUID customerId,
+            String sessionId,
+            Set<CartItem> items,
+            CartStatus status,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        this.cartId = cartId;
+        this.customerId = customerId;
+        this.sessionId = sessionId;
+        this.items.addAll(items);
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static Cart rehydrate(
+            UUID cartId,
+            UUID customerId,
+            String sessionId,
+            Set<CartItem> items,
+            CartStatus status,
+            Instant createdAt,
+            Instant updatedAt
+    ) {
+        return new Cart(cartId, customerId, sessionId, items, status, createdAt, updatedAt);
+    }
 }
