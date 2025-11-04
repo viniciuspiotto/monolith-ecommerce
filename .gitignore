@@ -26,7 +26,6 @@ release.properties
 *.iml
 *.iws
 *.ipr
-out/
 
 # eclipse
 .project
