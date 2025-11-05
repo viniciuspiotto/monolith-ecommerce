@@ -8,9 +8,9 @@ import edu.unifalmg.monolithecommerce.iam.application.port.out.TokenUtilsPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.UserRepositoryPort;
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.NationalId;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor

@@ -6,7 +6,7 @@ import edu.unifalmg.monolithecommerce.iam.application.mapper.RoleMapper;
 import edu.unifalmg.monolithecommerce.iam.application.port.in.GetRoleByIdPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.RoleRepositoryPort;
 import edu.unifalmg.monolithecommerce.iam.domain.model.Role;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class GetRoleByIdUseCase implements GetRoleByIdPort {
     private final RoleMapper roleMapper;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public RoleDTO execute (GetRoleByIdCommand cmd){
         Role roleFound = roleRepository.findById(cmd.id());
         return roleMapper.toDTO(roleFound);

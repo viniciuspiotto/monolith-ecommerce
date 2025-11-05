@@ -7,9 +7,9 @@ import edu.unifalmg.monolithecommerce.iam.application.port.out.TokenUtilsPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.UserRepositoryPort;
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Password;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class UpdatePasswordUseCase implements UpdatePasswordPort {
         String email = tokenUtils.extractEmail(cmd.token());
         User user = userRepository.findByEmail(email);
 
-        if (passwordEncoder.matches(user.getPassword().getPassword(), cmd.oldPassword())) {
+        if (!passwordEncoder.matches(cmd.oldPassword(), user.getPassword().getPassword())) {
             throw new IllegalArgumentException("The password doesn't match the previous version.");
         }
 

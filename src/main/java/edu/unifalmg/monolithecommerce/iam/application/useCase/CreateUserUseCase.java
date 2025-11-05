@@ -12,9 +12,9 @@ import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Address;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Email;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.NationalId;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Password;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

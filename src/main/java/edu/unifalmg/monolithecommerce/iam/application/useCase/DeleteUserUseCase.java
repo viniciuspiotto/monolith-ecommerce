@@ -5,9 +5,9 @@ import edu.unifalmg.monolithecommerce.iam.application.port.in.DeleteUserPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.TokenUtilsPort;
 import edu.unifalmg.monolithecommerce.iam.application.port.out.UserRepositoryPort;
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
