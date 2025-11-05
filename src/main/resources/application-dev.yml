@@ -25,7 +25,3 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 150MB
-
-  mvc:
-    servlet:
-      path: /api/v1

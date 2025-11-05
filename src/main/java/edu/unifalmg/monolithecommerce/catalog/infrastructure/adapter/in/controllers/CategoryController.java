@@ -11,12 +11,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController
-@RequestMapping("categories")
+@RequestMapping("api/v1/categories")
 @RequiredArgsConstructor
 public class CategoryController {
     private final CreateCategoryPort createCategoryUseCase;
@@ -24,6 +25,7 @@ public class CategoryController {
     private final CategoryRequestMapper requestMapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<?> createCategory(
            @Valid @RequestBody CreateCategoryRequest request
     ) {
