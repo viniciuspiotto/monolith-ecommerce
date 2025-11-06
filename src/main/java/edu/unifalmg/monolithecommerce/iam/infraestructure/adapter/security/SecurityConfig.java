@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.shared.infraestructure.security;
+package edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.shared.infraestructure.security;
+package edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.security;
 
 import edu.unifalmg.monolithecommerce.iam.application.DTO.UserDTO;
 import edu.unifalmg.monolithecommerce.iam.application.DTO.commands.GetUserByEmailCommand;

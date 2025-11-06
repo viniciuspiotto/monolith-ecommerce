@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.shared.infraestructure.startup;
+package edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.startup;
 
 import edu.unifalmg.monolithecommerce.iam.application.DTO.RoleDTO;
 import edu.unifalmg.monolithecommerce.iam.application.DTO.commands.CreateRoleCommand;
