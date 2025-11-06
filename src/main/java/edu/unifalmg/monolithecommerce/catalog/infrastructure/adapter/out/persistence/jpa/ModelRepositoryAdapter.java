@@ -50,5 +50,7 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
         ModelEntity entityToRemove = modelPersistenceMapper.toEntity(model);
 
         jpaRepository.delete(entityToRemove);
+
+        return modelPersistenceMapper.toDomain(entityToRemove);
     }
 }

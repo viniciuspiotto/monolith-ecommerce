@@ -16,6 +16,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -33,6 +34,7 @@ public class ModelController {
     private final ModelRequestMapper requestMapper;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<ModelDTO> createModel(
             @Valid @ModelAttribute CreateModelRequest request
     ) {
@@ -44,6 +46,7 @@ public class ModelController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<ModelDTO> updateModel(
             @PathVariable UUID id,
             @Valid @ModelAttribute EditModelRequest request
@@ -79,6 +82,7 @@ public class ModelController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ARTIST')")
     public ResponseEntity<ModelDTO> deleteModel(
             @PathVariable UUID id
     ) {
