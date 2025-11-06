@@ -8,7 +8,6 @@ public record UserDTO (
     String name,
     String lastName,
     String email,
-    String password,
     RoleDTO role,
     String nationalId,
     AddressDTO address
