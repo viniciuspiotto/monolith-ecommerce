@@ -9,11 +9,19 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  elasticsearch:
+    uris: http://localhost:9200
+
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 150MB
