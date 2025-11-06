@@ -2,6 +2,9 @@
 *.log
 logs/
 
+# upload files
+uploads/
+
 # environments
 .env
 *.env
@@ -26,7 +29,6 @@ release.properties
 *.iml
 *.iws
 *.ipr
-out/
 
 # eclipse
 .project

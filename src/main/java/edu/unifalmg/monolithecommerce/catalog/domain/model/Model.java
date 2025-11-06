@@ -1,5 +1,9 @@
 package edu.unifalmg.monolithecommerce.catalog.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelRemovedEvent;
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ModelStatus;
+import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.*;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +11,7 @@ import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +22,7 @@ public class Model extends AbstractAggregateRoot<Model> {
     private final ModelId modelId;
     private String title;
     private String description;
-    private File thumbnail;
+    private Thumbnail thumbnail;
     private Money price;
     private UUID categoryId;
     private Rate averageRate;
@@ -25,7 +30,7 @@ public class Model extends AbstractAggregateRoot<Model> {
     private final List<Mesh> meshes = new ArrayList<>();
     private final List<Texture> textures = new ArrayList<>();
 
-    public static Model create(String title, String description, File thumbnail, Money price, UUID categoryId) {
+    public static Model create(String title, String description, Thumbnail thumbnail, Money price, UUID categoryId) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title cannot be null or blank");
         }
@@ -72,25 +77,31 @@ public class Model extends AbstractAggregateRoot<Model> {
         meshes.add(mesh);
     }
 
-    public void removeMesh(int index){
-        if (meshes.isEmpty() || meshes.get(index) == null){
-            throw new IllegalArgumentException("Mesh index out of bounds");
+    public void removeMesh(Mesh mesh){
+        if (meshes.size() == 1) {
+            throw new IllegalArgumentException("Model must have at least 1 mesh");
         }
-        meshes.remove(index);
+        if (meshes.isEmpty() || mesh == null){
+            throw new IllegalArgumentException("Mesh cannot be empty or null");
+        }
+        meshes.remove(mesh);
     }
 
     public void addTexture(Texture texture) {
         if(texture == null){
-            throw new IllegalArgumentException("texture cannot be null");
+            throw new IllegalArgumentException("Texture cannot be null");
         }
         textures.add(texture);
     }
 
-    public void removeTexture(int index){
-        if (textures.isEmpty() || textures.get(index) == null){
-            throw new IllegalArgumentException("Texture index out of bounds");
+    public void removeTexture(Texture texture){
+        if (textures.size() == 1) {
+            throw new IllegalArgumentException("Model must have at least 1 texture");
         }
-        textures.remove(index);
+        if (textures.isEmpty() || texture == null){
+            throw new IllegalArgumentException("Texture cannot be empty or null");
+        }
+        textures.remove(texture);
     }
 
     public void renameModel(String title) {
@@ -107,7 +118,7 @@ public class Model extends AbstractAggregateRoot<Model> {
         this.description = description;
     }
 
-    public void changeThumbnail(File thumbnail) {
+    public void changeThumbnail(Thumbnail thumbnail) {
         if (thumbnail == null) {
             throw new IllegalArgumentException("Thumbnail cannot be null");
         }
@@ -126,5 +137,50 @@ public class Model extends AbstractAggregateRoot<Model> {
             throw new IllegalArgumentException("Category id cannot be null");
         }
         this.categoryId = categoryId;
+    }
+
+    public static Model rehydrate(
+            ModelId modelId,
+            String title,
+            String description,
+            Thumbnail thumbnail,
+            Money price,
+            UUID categoryId,
+            Rate averageRate,
+            ModelStatus status,
+            List<Mesh> meshes,
+            List<Texture> textures
+    ) {
+        Model model = Model.builder()
+                .modelId(modelId)
+                .title(title)
+                .description(description)
+                .thumbnail(thumbnail)
+                .price(price)
+                .categoryId(categoryId)
+                .averageRate(averageRate)
+                .status(status)
+                .build();
+
+        if (meshes != null) {
+            model.meshes.addAll(meshes);
+        }
+        if (textures != null) {
+            model.textures.addAll(textures);
+        }
+
+        return model;
+    }
+
+    public void notifyModelUpdated() {
+        this.registerEvent(new ModelUpdatedEvent(this.modelId.id()));
+    }
+
+    public void notifyModelRemoved() {
+        this.registerEvent(new ModelRemovedEvent(this.modelId.id()));
+    }
+
+    public Collection<Object> getDomainEvents() {
+        return this.domainEvents();
     }
 }
