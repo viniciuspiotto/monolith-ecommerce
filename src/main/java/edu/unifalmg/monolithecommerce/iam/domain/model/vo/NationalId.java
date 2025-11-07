@@ -3,7 +3,6 @@ package edu.unifalmg.monolithecommerce.iam.domain.model.vo;
 import br.com.caelum.stella.validation.CNPJValidator;
 import br.com.caelum.stella.validation.CPFValidator;
 import br.com.caelum.stella.validation.InvalidStateException;
-import com.sun.jdi.request.InvalidRequestStateException;
 import edu.unifalmg.monolithecommerce.iam.domain.model.enums.NationalIdType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,47 +15,59 @@ public class NationalId {
     private final NationalIdType type;
     private final String nationalNumber;
 
-    public static NationalId create (String number) {
+    public static NationalId create(String number) {
+        if (number == null) {
+            throw new IllegalArgumentException("The National number cannot be null");
+        }
         String nationalNumber = number.replaceAll("\\D", "");
-        if(!isValid(nationalNumber)){
+
+        if (!isValid(nationalNumber)) {
             throw new IllegalArgumentException("The National number is not valid");
         }
         return new NationalId(getType(nationalNumber), nationalNumber);
     }
 
-    private static NationalIdType getType(String number){
+    public static NationalId rehydrate(String nationalNumber) {
+        if (nationalNumber == null) return null;
+        return new NationalId(getType(nationalNumber), nationalNumber);
+    }
+
+    private static NationalIdType getType(String number) {
         if (number == null || number.isEmpty()) {
             throw new IllegalArgumentException("The National number is not with the correct type");
         }
-        if(number.length() == 11){
+        if (number.length() == 11) {
             return NationalIdType.CPF;
         }
-        if(number.length() == 14){
+        if (number.length() == 14) {
             return NationalIdType.CNPJ;
         }
         throw new IllegalArgumentException("The National number is not with the correct type");
     }
 
     public static boolean isValid(String number) {
-
         if (number == null || number.isEmpty()) {
             return false;
         }
 
-        CPFValidator cpfValidator = new CPFValidator();
-        CNPJValidator cnpjValidator = new CNPJValidator();
-
-        try {
-            cpfValidator.assertValid(number);
-            return true;
-        } catch (InvalidRequestStateException e1) {
+        if (number.length() == 11) {
             try {
-                cnpjValidator.assertValid(number);
+                new CPFValidator().assertValid(number);
                 return true;
-            } catch (InvalidStateException e2) {
+            } catch (InvalidStateException e) {
                 return false;
             }
         }
-    }
 
+        if (number.length() == 14) {
+            try {
+                new CNPJValidator().assertValid(number);
+                return true;
+            } catch (InvalidStateException e) {
+                return false;
+            }
+        }
+
+        return false;
+    }
 }
