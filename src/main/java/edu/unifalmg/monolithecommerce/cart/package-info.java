@@ -1,5 +1,5 @@
 @ApplicationModule(
-        allowedDependencies = {"catalog::api", "shared"}
+        allowedDependencies = {"catalog::api", "iam::api", "shared"}
 )
 package edu.unifalmg.monolithecommerce.cart;
 
