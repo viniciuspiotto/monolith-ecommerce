@@ -4,6 +4,7 @@ import edu.unifalmg.monolithecommerce.shared.infraestructure.dto.ErrorResponse;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -77,4 +78,12 @@ public class GlobalExceptionHandler {
 
         return new ErrorResponse(message);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        ErrorResponse body = new ErrorResponse("Access Denied. You do not have permission to perform this action.");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
 }

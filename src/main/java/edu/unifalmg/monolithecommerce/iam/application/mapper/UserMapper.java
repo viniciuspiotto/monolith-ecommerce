@@ -5,7 +5,6 @@ import edu.unifalmg.monolithecommerce.iam.domain.model.Role;
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Address;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Email;
-import edu.unifalmg.monolithecommerce.iam.domain.model.vo.Password;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.RoleId;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -26,13 +25,6 @@ public interface UserMapper {
             return null;
         }
         return email.getEmail();
-    }
-
-    default String map(Password password) {
-        if(password == null){
-            return null;
-        }
-        return password.getPassword();
     }
 
     default UUID map(RoleId roleId) {

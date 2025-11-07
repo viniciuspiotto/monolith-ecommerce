@@ -1,9 +1,7 @@
 package edu.unifalmg.monolithecommerce.iam.application.DTO.commands;
 
-import java.util.UUID;
-
 public record UpdateUserInformationCommand(
-        String token,
+        String email,
         String name,
         String lastName,
         String nationalId,

@@ -9,6 +9,7 @@ import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.domain.model.vo.RoleId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +18,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private final CreateRolePort createRoleUseCase;
     private final UserRepositoryPort userRepositoryPort;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -32,11 +34,14 @@ public class DataInitializer implements CommandLineRunner {
         } catch (RuntimeException e) {
             Role role = Role.rehydrate(new RoleId(artistRoleDTO.roleId()), artistRoleDTO.name(), artistRoleDTO.description());
 
+            String plainTextPassword = "Strong@ss123";
+            String hashedPassword = passwordEncoder.encode(plainTextPassword);
+
             User artistUser = User.create(
                     "Art",
                     "Ist",
                     edu.unifalmg.monolithecommerce.iam.domain.model.vo.Email.create("artist@example.com"),
-                    edu.unifalmg.monolithecommerce.iam.domain.model.vo.Password.create("StrongP@ss123"),
+                    edu.unifalmg.monolithecommerce.iam.domain.model.vo.HashedPassword.create(hashedPassword),
                     role,
                     edu.unifalmg.monolithecommerce.iam.domain.model.vo.Address.create(
                             "Country", "City", "State", "12345", "Street", 1, "Neighborhood", "Complement"

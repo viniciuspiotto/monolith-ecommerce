@@ -4,65 +4,46 @@ import edu.unifalmg.monolithecommerce.iam.application.port.out.UserRepositoryPor
 import edu.unifalmg.monolithecommerce.iam.domain.model.User;
 import edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.mapper.UserPersistenceMapper;
 import edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.persistence.entity.UserEntity;
-import edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.security.utils.PasswordEncoderConfig;
+import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepositoryPort {
 
     private final UserPersistenceMapper userPersistenceMapper;
-    private final UserJpaRepository JpaRepository;
-    private final PasswordEncoderConfig passwordEncoderConfig;
+    private final UserJpaRepository jpaRepository;
 
     @Override
     public User save(User user) {
         UserEntity entityToSave = userPersistenceMapper.toEntity(user);
-        entityToSave.setPassword(passwordEncoderConfig.passwordEncoder().encode(entityToSave.getPassword()));
-        UserEntity savedEntity = JpaRepository.save(entityToSave);
-
-        return userPersistenceMapper.toDomain(savedEntity);
-    }
-
-    @Override
-    public User updatePassword (User user) {
-        UserEntity entityToSave = userPersistenceMapper.toEntity(user);
-        entityToSave.setPassword(passwordEncoderConfig.passwordEncoder().encode(entityToSave.getPassword()));
-        UserEntity savedEntity = JpaRepository.save(entityToSave);
-        return userPersistenceMapper.toDomain(savedEntity);
-    }
-
-    @Override
-    public User update (User user) {
-        UserEntity entityToSave = userPersistenceMapper.toEntity(user);
-        UserEntity savedEntity = JpaRepository.save(entityToSave);
+        UserEntity savedEntity = jpaRepository.save(entityToSave);
         return userPersistenceMapper.toDomain(savedEntity);
     }
 
     @Override
     public Boolean existsByEmail(String email) {
-        return JpaRepository.existsByEmail(email);
+        return jpaRepository.existsByEmail(email);
     }
 
     @Override
-    public User findByEmail(String email){
-        Optional<UserEntity> entityFind = JpaRepository.findByEmail(email);
-        if(entityFind.isEmpty()){
-            throw new RuntimeException("User with this email not found");
+    public User findByEmail(String email) {
+        Optional<UserEntity> entityFind = jpaRepository.findByEmail(email);
+
+        if (entityFind.isEmpty()) {
+            throw new ResourceNotFoundException("User with email " + email + " not found.");
         }
         return userPersistenceMapper.toDomain(entityFind.get());
-
     }
 
     @Override
-    public Boolean delete (User user){
+    public Boolean delete(User user) {
         UserEntity entityToDelete = userPersistenceMapper.toEntity(user);
-        JpaRepository.delete(entityToDelete);
+        jpaRepository.delete(entityToDelete);
         return true;
     }
-
 }
+

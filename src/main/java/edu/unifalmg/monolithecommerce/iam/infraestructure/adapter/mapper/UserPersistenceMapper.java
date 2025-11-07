@@ -15,70 +15,76 @@ import java.util.UUID;
 @Mapper(componentModel = "spring")
 public interface UserPersistenceMapper {
 
-    @Mapping(source = "userId.id", target = "id")
-    @Mapping(source = "email.email", target = "email")
-    @Mapping(source = "password.password", target = "password")
-    @Mapping(source = "role", target = "roleId")
+    @Mapping(target = "id", source = "userId.id")
+    @Mapping(target = "email", source = "email.email")
+    @Mapping(target = "hashedPassword", source = "hashedPassword.hashedPassword")
+    @Mapping(target = "roleId", source = "role")
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "nationalId", source = "nationalId")
     UserEntity toEntity(User user);
 
     AddressEmbeddable addressToEmbeddable(Address address);
     NationalIdEmbeddable nationalIdToEmbeddable(NationalId nationalId);
 
     default RoleEntity roleToEntity(Role role) {
+        if (role == null) return null;
         return new RoleEntity(role.getRoleId().id(), role.getName(), role.getDescription());
     }
 
     default User toDomain(UserEntity entity) {
-
-        if(entity == null) {
+        if (entity == null) {
             return null;
         }
 
-        UserId userid = mapToUser(entity.getId());
-        Password password = mapToPassword(entity.getPassword());
+        UserId userid = mapToUserId(entity.getId());
+        HashedPassword hashedPassword = mapToPassword(entity.getPassword());
         Email email = mapToEmail(entity.getEmail());
-        NationalId nationalId = map(entity.getNationalId());
-        Role role = map(entity.getRoleId());
-        Address address = map(entity.getAddress());
+        NationalId nationalId = mapToNationalId(entity.getNationalId());
+        Role role = mapToRole(entity.getRoleId());
+        Address address = mapToAddress(entity.getAddress());
 
         return User.rehydrate(
                 userid,
                 entity.getName(),
                 entity.getLastName(),
                 email,
-                password,
+                hashedPassword,
                 role,
                 address,
                 nationalId
         );
-
     }
 
-    default UserId mapToUser (UUID id){
+    default UserId mapToUserId(UUID id) {
+        if (id == null) return null;
         return new UserId(id);
     }
 
-    default Password mapToPassword(String password){
-        return new Password(password);
+    default HashedPassword mapToPassword(String hashedPassword) {
+        if (hashedPassword == null) return null;
+        return new HashedPassword(hashedPassword);
     }
 
-    default Email mapToEmail(String email){
+    default Email mapToEmail(String email) {
+        if (email == null) return null;
         return new Email(email);
     }
 
-    default NationalId map(NationalIdEmbeddable embeddable){
-        return NationalId.create(embeddable.getNationalNumber());
+    default NationalId mapToNationalId(NationalIdEmbeddable embeddable) {
+        if (embeddable == null) return null;
+        return NationalId.rehydrate(embeddable.getNationalNumber());
     }
 
-    default Role map(RoleEntity entity) {
+    default Role mapToRole(RoleEntity entity) {
         if (entity == null) {
             return null;
         }
         return Role.rehydrate(new RoleId(entity.getId()), entity.getName(), entity.getDescription());
     }
 
-    default Address map(AddressEmbeddable addressEmbeddable){
-        return Address.create(
+    default Address mapToAddress(AddressEmbeddable addressEmbeddable) {
+        if (addressEmbeddable == null) return null;
+        return Address.rehydrate(
                 addressEmbeddable.getCountry(),
                 addressEmbeddable.getCity(),
                 addressEmbeddable.getState(),
@@ -89,5 +95,4 @@ public interface UserPersistenceMapper {
                 addressEmbeddable.getComplement()
         );
     }
-
 }

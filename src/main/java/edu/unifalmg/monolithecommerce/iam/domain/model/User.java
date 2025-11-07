@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.UUID;
-
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class User {
@@ -15,12 +13,12 @@ public class User {
     private String name;
     private String lastName;
     private Email email;
-    private Password password;
+    private HashedPassword hashedPassword;
     private Address address;
     private Role role;
     private NationalId nationalId;
 
-    public static User create(String name, String lastName, Email email, Password password, Role role, Address address, NationalId nationalId) {
+    public static User create(String name, String lastName, Email email, HashedPassword hashedPassword, Role role, Address address, NationalId nationalId) {
 
         if(name == null || name.isEmpty()){
             throw new IllegalArgumentException("Name cannot be null or empty");
@@ -46,7 +44,7 @@ public class User {
                 .name(name)
                 .lastName(lastName)
                 .email(email)
-                .password(password)
+                .hashedPassword(hashedPassword)
                 .role(role)
                 .address(address)
                 .nationalId(nationalId)
@@ -74,11 +72,11 @@ public class User {
         this.email = email;
     }
 
-    public void updatePassword(Password password) {
-        if (password == null) {
-            throw new IllegalArgumentException("Password cannot be null");
+    public void updateHashedPassword(HashedPassword hashedPassword) {
+        if (hashedPassword == null) {
+            throw new IllegalArgumentException("Hashed password cannot be null");
         }
-        this.password = password;
+        this.hashedPassword = hashedPassword;
     }
 
     public void updateAddress(Address address) {
@@ -107,7 +105,7 @@ public class User {
             String name,
             String lastName,
             Email email,
-            Password password,
+            HashedPassword hashedPassword,
             Role role,
             Address address,
             NationalId nationalId
@@ -117,7 +115,7 @@ public class User {
                 .name(name)
                 .lastName(lastName)
                 .email(email)
-                .password(password)
+                .hashedPassword(hashedPassword)
                 .role(role)
                 .address(address)
                 .nationalId(nationalId)

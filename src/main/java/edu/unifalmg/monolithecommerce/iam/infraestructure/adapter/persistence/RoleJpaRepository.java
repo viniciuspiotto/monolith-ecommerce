@@ -1,6 +1,5 @@
 package edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.persistence;
 
-import edu.unifalmg.monolithecommerce.iam.domain.model.Role;
 import edu.unifalmg.monolithecommerce.iam.infraestructure.adapter.persistence.entity.RoleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
