@@ -8,9 +8,13 @@ import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepos
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class CreateCategoryModelUseCase implements CreateCategoryPort {
     private final CategoryRepositoryPort categoryRepository;
@@ -19,9 +23,10 @@ public class CreateCategoryModelUseCase implements CreateCategoryPort {
     @Override
     @Transactional
     public CategoryDTO execute(CreateCategoryCommand cmd){
-        Boolean isExistCategory = categoryRepository.existsByName(cmd.name());
+        Optional<Category> categoryFounded = categoryRepository.findByName(cmd.name());
 
-        if (isExistCategory) {
+        if (categoryFounded.isPresent()) {
+            log.warn("A category with {} already exists", cmd.name());
             throw new IllegalArgumentException("A category with the name '" + cmd.name() + "' already exists.");
         }
 
@@ -29,6 +34,8 @@ public class CreateCategoryModelUseCase implements CreateCategoryPort {
                 cmd.name(),
                 cmd.description()
         );
+
+        log.info("Creating category with name '{}'.", cmd.name());
 
         Category savedCategory = categoryRepository.save(category);
         return categoryMapper.toDTO(savedCategory);
