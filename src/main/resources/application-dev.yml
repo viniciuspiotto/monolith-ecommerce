@@ -43,3 +43,8 @@ api:
     cookie:
       name: jwt-token
       secure: ${JWT_COOKIE_SECURE}
+
+server:
+  servlet:
+    session:
+      timeout: 30m

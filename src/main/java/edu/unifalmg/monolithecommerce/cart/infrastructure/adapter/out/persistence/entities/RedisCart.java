@@ -5,8 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
-import org.springframework.data.redis.core.types.Expiration;
 
 import java.time.Instant;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Data
 @Builder
-@RedisHash("cart")
+@RedisHash(value = "cart")
 public class RedisCart {
 
     @Id
@@ -31,10 +31,6 @@ public class RedisCart {
     private Instant createdAt;
     private Instant updatedAt;
 
-    public Expiration getExpiration() {
-        if (this.status == CartStatus.OPEN) {
-            return Expiration.from(7 * 24, TimeUnit.HOURS);
-        }
-        return Expiration.from(1, TimeUnit.HOURS);
-    }
+    @TimeToLive(unit = TimeUnit.SECONDS)
+    private Long timeToLive;
 }

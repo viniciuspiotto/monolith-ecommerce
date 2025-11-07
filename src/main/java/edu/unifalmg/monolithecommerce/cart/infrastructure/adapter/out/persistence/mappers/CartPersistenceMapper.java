@@ -2,9 +2,9 @@ package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persisten
 
 import edu.unifalmg.monolithecommerce.cart.domain.model.Cart;
 import edu.unifalmg.monolithecommerce.cart.domain.model.CartItem;
+import edu.unifalmg.monolithecommerce.cart.domain.model.CartStatus;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence.entities.RedisCart;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence.entities.RedisCartItem;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -13,15 +13,42 @@ import org.mapstruct.ObjectFactory;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface CartPersistenceMapper {
 
-    RedisCart toEntity(Cart domain);
+    default RedisCart toEntity(Cart domain) {
+        if (domain == null) {
+            return null;
+        }
+
+        RedisCart.RedisCartBuilder entityBuilder = RedisCart.builder()
+                .cartId(domain.getCartId())
+                .customerId(domain.getCustomerId())
+                .status(domain.getStatus())
+                .createdAt(domain.getCreatedAt())
+                .updatedAt(domain.getUpdatedAt());
+
+        if (domain.getItems() != null) {
+            entityBuilder.items(
+                    domain.getItems().stream()
+                            .map(this::toEntityItem)
+                            .collect(Collectors.toSet())
+            );
+        }
+
+        if (domain.getStatus() == CartStatus.OPEN) {
+            entityBuilder.timeToLive(2592000L);
+        } else {
+            entityBuilder.timeToLive(3600L);
+        }
+
+        return entityBuilder.build();
+    }
 
     @Mapping(source = "unitPrice.amount", target = "unitPrice")
+    @Mapping(source = "modelId.id", target = "modelId")
     RedisCartItem toEntityItem(CartItem domainItem);
 
     Cart toDomain(RedisCart entity);
@@ -61,12 +88,5 @@ public interface CartPersistenceMapper {
             return null;
         }
         return new Money(decimal);
-    }
-
-    default UUID map(ModelId modelId) {
-        if (modelId == null) {
-            return null;
-        }
-        return modelId.id();
     }
 }
