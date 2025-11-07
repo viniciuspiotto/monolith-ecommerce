@@ -4,10 +4,11 @@ import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
-public class CartItem {
+public class CartItem implements Serializable {
     private final ModelId modelId;
     private int quantity;
     private final Money unitPrice;

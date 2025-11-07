@@ -12,6 +12,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -31,10 +32,14 @@ public class TokenGenerationService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             List<String> roles = List.of(user.getRole().getName());
 
+            UUID uuid = user.getUserId().id();
+            String customerIdString = uuid.toString();
+
             String token = JWT.create()
                     .withIssuer(issuer)
                     .withSubject(user.getEmail().getEmail())
                     .withClaim("roles", roles)
+                    .withClaim("customerId", customerIdString)
                     .withIssuedAt(Instant.now())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);

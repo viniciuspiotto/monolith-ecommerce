@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out;
+package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.api;
 
 import edu.unifalmg.monolithecommerce.cart.application.ports.out.CatalogServicePort;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.GetModelPricePort;

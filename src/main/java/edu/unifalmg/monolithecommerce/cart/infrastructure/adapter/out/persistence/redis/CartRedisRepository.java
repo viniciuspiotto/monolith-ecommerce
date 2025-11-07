@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence;
+package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence.redis;
 
 
 import edu.unifalmg.monolithecommerce.cart.domain.model.CartStatus;
@@ -12,5 +12,4 @@ import java.util.UUID;
 @Repository
 public interface CartRedisRepository extends CrudRepository<RedisCart, UUID> {
     Optional<RedisCart> findByCustomerIdAndStatus(UUID customerId, CartStatus status);
-    Optional<RedisCart> findBySessionIdAndStatus(String sessionId, CartStatus status);
 }

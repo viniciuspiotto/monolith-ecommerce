@@ -7,6 +7,5 @@ import java.util.UUID;
 
 public interface CartRepositoryPort {
     Optional<Cart> findByCustomerIdAndStatusOpen(UUID customerId);
-    Optional<Cart> findBySessionIdAndStatusOpen(String sessionId);
     Cart save(Cart cart);
 }

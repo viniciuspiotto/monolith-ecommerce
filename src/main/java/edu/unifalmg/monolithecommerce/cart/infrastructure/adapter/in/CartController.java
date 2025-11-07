@@ -1,9 +1,11 @@
 package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in;
 
 import edu.unifalmg.monolithecommerce.cart.application.dtos.CartDTO;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToCartCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToSessionCartCommand;
 import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemCommand;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToCartPort;
+import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToSessionCartPort;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.RemoveItemToCartPort;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.AddItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.RemoveItemRequest;
@@ -12,30 +14,57 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @Slf4j
 @RestController
-@RequestMapping("cart")
+@RequestMapping("carts")
 @RequiredArgsConstructor
 public class CartController {
 
     private final AddItemToCartPort addItemToCartPort;
+    private final AddItemToSessionCartPort addItemToSessionCartPort;
     private final RemoveItemToCartPort removeItemToCartPort;
 
     private final CartRequestMapper cartRequestMapper;
 
     @PostMapping("/items")
     public ResponseEntity<CartDTO> addItem(
-            @Valid @RequestBody AddItemRequest request
+        @Valid @RequestBody AddItemRequest request,
+        Authentication authentication
     ) {
         log.info("Received request to add item: {}", request.modelId());
 
-        AddItemCommand cmd = cartRequestMapper.toCommand(request);
+        CartDTO updatedCart;
 
-        CartDTO updatedCart = addItemToCartPort.execute(cmd);
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            String principal = (String) authentication.getPrincipal();
+            log.debug("User is authenticated. Principal (Subject): {}", principal);
 
-        log.info("Successfully added a new item to cart: {}", updatedCart.cartId());
+            UUID customerId;
+            try {
+                customerId = UUID.fromString(principal);
+            } catch (IllegalArgumentException e) {
+                log.error("Authenticated principal is not a valid UUID: {}", principal, e);
+                return ResponseEntity.badRequest().build();
+            }
+
+            AddItemToCartCommand cmd = cartRequestMapper.toCommand(request, customerId);
+
+            updatedCart = addItemToCartPort.execute(cmd);
+            log.info("Added a new item to USER cart: {}", updatedCart.cartId());
+        } else {
+            log.debug("Session user, using session cart");
+
+            AddItemToSessionCartCommand cmd = cartRequestMapper.toCommand(request);
+
+            updatedCart = addItemToSessionCartPort.execute(cmd);
+            log.info("Added a new item to SESSION cart: {}", updatedCart.cartId());
+        }
 
         return ResponseEntity.ok(updatedCart);
     }

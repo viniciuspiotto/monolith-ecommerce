@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence;
+package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.out.persistence.redis;
 
 import edu.unifalmg.monolithecommerce.cart.application.ports.out.CartRepositoryPort;
 import edu.unifalmg.monolithecommerce.cart.domain.model.Cart;
@@ -26,17 +26,6 @@ public class CartRedisRepositoryAdapter implements CartRepositoryPort {
 
         Optional<RedisCart> entity = redisRepository.findByCustomerIdAndStatus(
                 customerId, CartStatus.OPEN
-        );
-
-        return entity.map(mapper::toDomain);
-    }
-
-    @Override
-    public Optional<Cart> findBySessionIdAndStatusOpen(String sessionId) {
-        log.info("Finding cart by sessionId: {}", sessionId);
-
-        Optional<RedisCart> entity = redisRepository.findBySessionIdAndStatus(
-                sessionId, CartStatus.OPEN
         );
 
         return entity.map(mapper::toDomain);

@@ -38,6 +38,14 @@ public class TokenValidationService {
         return decodedJWT.getSubject();
     }
 
+    public String getClaim(DecodedJWT decodedJWT, String claimName) {
+        var claim = decodedJWT.getClaim(claimName);
+        if (claim.isNull()) {
+            return null;
+        }
+        return claim.asString();
+    }
+
     public List<String> getRoles(DecodedJWT decodedJWT) {
         List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
         return roles != null ? roles : Collections.emptyList();

@@ -3,42 +3,52 @@ package edu.unifalmg.monolithecommerce.cart.domain.model;
 import edu.unifalmg.monolithecommerce.cart.domain.events.CartCheckoutEvent;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
+import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
-public class Cart extends AbstractAggregateRoot<Cart> {
+@Builder(access = AccessLevel.PRIVATE)
+public class Cart extends AbstractAggregateRoot<Cart> implements Serializable {
     private final UUID cartId;
 
-    private final UUID customerId;
-    private final String sessionId;
+    private UUID customerId;
 
+    @Builder.Default
     private final Set<CartItem> items = new HashSet<>();
     private CartStatus status;
 
     private final Instant createdAt;
     private Instant updatedAt;
 
-    public Cart(UUID customerId, String sessionId) {
-        if (customerId == null && sessionId == null) {
-            throw new IllegalArgumentException("Customer must have be an owner (customer or session)");
-        }
-        if (customerId != null && sessionId != null) {
-            throw new IllegalArgumentException("Cart cannot have both customer and session ID");
-        }
+    public static Cart create(UUID customerId) {
+        Instant now = Instant.now();
 
-        this.cartId = UUID.randomUUID();
-        this.customerId = customerId;
-        this.sessionId = sessionId;
-        this.status = CartStatus.OPEN;
-        this.createdAt = Instant.now();
-        this.updatedAt = createdAt;
+        return Cart.builder()
+                .cartId(UUID.randomUUID())
+                .customerId(customerId)
+                .status(CartStatus.OPEN)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+    }
+
+    public static Cart create() {
+        Instant now = Instant.now();
+
+        return Cart.builder()
+                .cartId(UUID.randomUUID())
+                .status(CartStatus.OPEN)
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
     }
 
     public void addItem(ModelId modelId, Money unitPrice, int quantity) {
@@ -64,6 +74,38 @@ public class Cart extends AbstractAggregateRoot<Cart> {
         this.touch();
     }
 
+    public void merge(Cart otherCart) {
+        if (otherCart == null || otherCart.getItems().isEmpty()) {
+            throw new IllegalStateException("Cannot merge null or empty cart");
+        }
+
+        Map<ModelId, CartItem> currentItemsCart = this.items.stream()
+                .collect(Collectors.toMap(CartItem::getModelId, Function.identity()));
+
+        for (CartItem item : otherCart.getItems()) {
+            CartItem existingItem = currentItemsCart.get(item.getModelId());
+
+            if (existingItem != null) {
+                existingItem.setQuantity(item.getQuantity());
+            } else {
+                this.items.add(item);
+            }
+        }
+
+        this.touch();
+    }
+
+    public void assignToCustomer(UUID customerId) {
+        if (this.customerId != null) {
+            throw new IllegalStateException("Cannot assign customer to a non-existing cart");
+        }
+        if (customerId == null) {
+            throw new IllegalArgumentException("Customer ID cannot be null");
+        }
+        this.customerId = customerId;
+        this.touch();
+    }
+
     public void clearCart() {
         this.items.clear();
         this.touch();
@@ -76,6 +118,9 @@ public class Cart extends AbstractAggregateRoot<Cart> {
     }
 
     public void checkout() {
+        if (this.customerId == null) {
+            throw new IllegalStateException("Cannot checkout an anonymous cart. Must be assigned to customer");
+        }
         if (this.items.isEmpty()) {
             throw new IllegalStateException("Cannot checkout an empty cart");
         }
@@ -113,33 +158,28 @@ public class Cart extends AbstractAggregateRoot<Cart> {
         this.updatedAt = Instant.now();
     }
 
-    private Cart(
-            UUID cartId,
-            UUID customerId,
-            String sessionId,
-            Set<CartItem> items,
-            CartStatus status,
-            Instant createdAt,
-            Instant updatedAt
-    ) {
-        this.cartId = cartId;
-        this.customerId = customerId;
-        this.sessionId = sessionId;
-        this.items.addAll(items);
-        this.status = status;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public static Cart rehydrate(
             UUID cartId,
             UUID customerId,
-            String sessionId,
             Set<CartItem> items,
             CartStatus status,
             Instant createdAt,
             Instant updatedAt
     ) {
-        return new Cart(cartId, customerId, sessionId, items, status, createdAt, updatedAt);
+        Cart cart = Cart.builder()
+                .cartId(cartId)
+                .customerId(customerId)
+                .status(status)
+                .createdAt(createdAt)
+                .updatedAt(updatedAt)
+                .build();
+
+        if (items != null) {
+            for (CartItem item : items) {
+                cart.getItems().add(item);
+            }
+        }
+
+        return cart;
     }
 }

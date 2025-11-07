@@ -2,12 +2,13 @@ package edu.unifalmg.monolithecommerce.shared.domain.model;
 
 import lombok.Getter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
 
 @Getter
-public class Money {
+public class Money implements Serializable {
     private static final Currency BRL = Currency.getInstance("BRL");
     public static final Money ZERO = new Money(BigDecimal.ZERO);
 

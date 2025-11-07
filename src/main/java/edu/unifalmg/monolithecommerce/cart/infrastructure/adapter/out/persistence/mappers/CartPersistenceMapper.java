@@ -40,7 +40,6 @@ public interface CartPersistenceMapper {
         return Cart.rehydrate(
                 entity.getCartId(),
                 entity.getCustomerId(),
-                entity.getSessionId(),
                 domainItems,
                 entity.getStatus(),
                 entity.getCreatedAt(),

@@ -25,9 +25,6 @@ public class RedisCart {
     private UUID customerId;
 
     @Indexed
-    private String sessionId;
-
-    @Indexed
     private CartStatus status;
 
     private Set<RedisCartItem> items;

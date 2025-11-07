@@ -1,45 +1,39 @@
 package edu.unifalmg.monolithecommerce.cart.application.usecases;
 
 import edu.unifalmg.monolithecommerce.cart.application.dtos.CartDTO;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToCartCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToSessionCartCommand;
 import edu.unifalmg.monolithecommerce.cart.application.mappers.CartMapper;
-import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToCartPort;
-import edu.unifalmg.monolithecommerce.cart.application.ports.out.CartRepositoryPort;
+import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToSessionCartPort;
 import edu.unifalmg.monolithecommerce.cart.application.ports.out.CatalogServicePort;
+import edu.unifalmg.monolithecommerce.cart.application.ports.out.SessionCartRepositoryPort;
 import edu.unifalmg.monolithecommerce.cart.domain.model.Cart;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+@Service
 @Log4j2
 @RequiredArgsConstructor
-@Service
-public class AddItemToCartUseCase implements AddItemToCartPort {
+public class AddItemToSessionCartUseCase implements AddItemToSessionCartPort {
 
+    private final SessionCartRepositoryPort sessionCartRepositoryPort;
     private final CatalogServicePort catalogServicePort;
-    private final CartRepositoryPort cartRepositoryPort;
 
     private final CartMapper cartMapper;
 
-    @Transactional
     @Override
-    public CartDTO execute(AddItemToCartCommand cmd) {
+    public CartDTO execute(AddItemToSessionCartCommand cmd) {
         Money unitPrice = catalogServicePort.getModelPrice(cmd.modelId())
                 .orElseThrow(() -> new ResourceNotFoundException("Model not found."));
 
-        Cart cart = cartRepositoryPort.findByCustomerIdAndStatusOpen(cmd.customerId())
-                .orElseGet(() -> {
-                    log.info("Creating new cart for customerId: {}", cmd.customerId());
-                    return Cart.create(cmd.customerId());
-                });
+        Cart cart = sessionCartRepositoryPort.getCart();
 
         cart.addItem(cmd.modelId(), unitPrice, cmd.quantity());
 
-        Cart savedCart = cartRepositoryPort.save(cart);
-        log.info("Item added successfully to cartId: {}", savedCart.getCartId());
+        Cart savedCart = sessionCartRepositoryPort.save(cart);
+        log.info("Item added successfully to session cart: {}", savedCart.getCartId());
 
         return cartMapper.toDTO(savedCart);
     }
