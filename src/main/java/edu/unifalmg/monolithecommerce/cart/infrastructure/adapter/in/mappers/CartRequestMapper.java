@@ -2,7 +2,8 @@ package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.mappers;
 
 import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToCartCommand;
 import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToSessionCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToCartCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToSessionCartCommand;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.AddItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.RemoveItemRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
@@ -15,7 +16,8 @@ public interface CartRequestMapper {
     AddItemToCartCommand toCommand(AddItemRequest request, UUID customerId);
     AddItemToSessionCartCommand toCommand(AddItemRequest request);
 
-    RemoveItemCommand toCommand(RemoveItemRequest request);
+    RemoveItemToCartCommand toCommand(RemoveItemRequest request, UUID customerId);
+    RemoveItemToSessionCartCommand toCommand(RemoveItemRequest request);
 
     default ModelId toModelId(UUID id) {
         if (id == null) {

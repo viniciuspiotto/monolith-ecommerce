@@ -3,10 +3,12 @@ package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in;
 import edu.unifalmg.monolithecommerce.cart.application.dtos.CartDTO;
 import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToCartCommand;
 import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToSessionCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToCartCommand;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToSessionCartCommand;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToCartPort;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToSessionCartPort;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.RemoveItemToCartPort;
+import edu.unifalmg.monolithecommerce.cart.application.ports.in.RemoveItemToSessionCartPort;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.AddItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.RemoveItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.mappers.CartRequestMapper;
@@ -29,6 +31,7 @@ public class CartController {
     private final AddItemToCartPort addItemToCartPort;
     private final AddItemToSessionCartPort addItemToSessionCartPort;
     private final RemoveItemToCartPort removeItemToCartPort;
+    private final RemoveItemToSessionCartPort removeItemToSessionCartPort;
 
     private final CartRequestMapper cartRequestMapper;
 
@@ -71,13 +74,38 @@ public class CartController {
 
     @DeleteMapping("/items")
     public ResponseEntity<CartDTO> removeItem(
-            @Valid @RequestBody RemoveItemRequest request
+            @Valid @RequestBody RemoveItemRequest request,
+            Authentication authentication
     ) {
         log.info("Received request to remove item: {}", request.modelId());
 
-        RemoveItemCommand cmd = cartRequestMapper.toCommand(request);
+        CartDTO updatedCart;
 
-        CartDTO updatedCart = removeItemToCartPort.execute(cmd);
+        if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
+            String principal = (String) authentication.getPrincipal();
+            log.debug("User is authenticated. Principal (Subject): {}", principal);
+
+            UUID customerId;
+            try {
+                customerId = UUID.fromString(principal);
+            } catch (IllegalArgumentException e) {
+                log.error("Authenticated principal is not a valid UUID: {}", principal, e);
+                return ResponseEntity.badRequest().build();
+            }
+
+            RemoveItemToCartCommand cmd = cartRequestMapper.toCommand(request, customerId);
+
+            updatedCart = removeItemToCartPort.execute(cmd);
+            log.info("Removed item from USER cart: {}", updatedCart.cartId());
+
+        } else {
+            log.debug("Session user, using session cart");
+
+            RemoveItemToSessionCartCommand cmd = cartRequestMapper.toCommand(request);
+
+            updatedCart = removeItemToSessionCartPort.execute(cmd);
+            log.info("Removed item from SESSION cart: {}", updatedCart.cartId());
+        }
 
         return ResponseEntity.ok(updatedCart);
     }
