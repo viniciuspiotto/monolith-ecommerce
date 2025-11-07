@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Duration;
 
 @RestController
-@RequestMapping("api/v1/auth")
+@RequestMapping("auth")
 @Log4j2
 @RequiredArgsConstructor
 public class AuthController {

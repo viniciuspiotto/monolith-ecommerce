@@ -1,8 +1,7 @@
 spring:
   h2:
     console:
-      enabled: true
-      path: /h2-console
+      enabled: false
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
@@ -25,14 +24,15 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
 
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 150MB
+
+  mvc:
+    servlet:
+      path: /api/v1
 
 api:
   security:
@@ -43,12 +43,3 @@ api:
     cookie:
       name: jwt-token
       secure: ${JWT_COOKIE_SECURE}
-
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 150MB
-
-  mvc:
-    servlet:
-      path: /api/v1
