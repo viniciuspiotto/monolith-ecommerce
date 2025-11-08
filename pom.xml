@@ -33,6 +33,7 @@
         <org.tika.version>3.2.3</org.tika.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <caelum.stella.version>2.1.2</caelum.stella.version>
+        <mercado.pago.version>2.5.0</mercado.pago.version>
     </properties>
     <dependencies>
         <dependency>
@@ -114,6 +115,11 @@
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mercadopago</groupId>
+            <artifactId>sdk-java</artifactId>
+            <version>${mercado.pago.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

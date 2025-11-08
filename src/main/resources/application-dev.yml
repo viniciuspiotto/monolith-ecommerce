@@ -35,3 +35,7 @@ api:
     cookie:
       name: jwt-token
       secure: ${JWT_COOKIE_SECURE}
+
+mercadoPago:
+  accessToken: ${MERCADO_PAGO_ACCESS_TOKEN}
+  notificationURL: ${MERCADO_PAGO_NOTIFICATION_URL}
