@@ -7,9 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PaymentRepositoryPort {
-    Payment create(Payment model);
+    Payment save(Payment model);
     Optional<Payment> findById(UUID id);
-    Payment update(Payment model);
     Optional<Payment> findByOrderId(UUID orderId);
     Boolean existsByOrderId (UUID orderId);
 }

@@ -39,7 +39,7 @@ public class ProcessPaymentNotificationUseCase implements ProcessPaymentNotifica
 
         log.info("Updating payment status for paymentId {}: from {} to {}", cmd.paymentId(), payment.get().getStatus(), status.status());
         payment.get().changeStatus(status.status());
-        paymentRepository.update(payment.get());
+        paymentRepository.save(payment.get());
 
     }
 }

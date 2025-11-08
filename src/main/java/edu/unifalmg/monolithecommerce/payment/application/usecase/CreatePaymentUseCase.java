@@ -51,7 +51,7 @@ public class CreatePaymentUseCase implements CreatePaymentPort {
 
         payment.setPreferenceId(createPaymentResponseDTO.preferenceId());
         log.info("Save the payment to database");
-        paymentRepository.create(payment);
+        paymentRepository.save(payment);
 
         return createPaymentResponseDTO;
 

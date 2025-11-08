@@ -18,7 +18,7 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     private final PaymentPersistentMapper paymentPersistentMapper;
 
     @Override
-    public Payment create(Payment model){
+    public Payment save(Payment model){
            PaymentEntity paymentEntity = paymentPersistentMapper.toEntity(model);
            PaymentEntity paymentEntityReturn = paymentJpaRepository.save(paymentEntity);
            return paymentPersistentMapper.toDomain(paymentEntityReturn);
@@ -39,13 +39,6 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     public Optional<Payment> findById(UUID id){
         Optional<PaymentEntity> paymentEntityOptional = paymentJpaRepository.findById(id);
         return paymentEntityOptional.map(paymentPersistentMapper::toDomain);
-    }
-
-    @Override
-    public Payment update(Payment model){
-        PaymentEntity paymentEntity = paymentPersistentMapper.toEntity(model);
-        PaymentEntity paymentEntityReturn = paymentJpaRepository.save(paymentEntity);
-        return paymentPersistentMapper.toDomain(paymentEntityReturn);
     }
 
 }
