@@ -36,6 +36,13 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
     }
 
     @Override
+    public Optional<Model> findByTitle(String title) {
+        Optional<ModelEntity> optionalEntity = jpaRepository.findByTitle(title);
+
+        return optionalEntity.map(modelPersistenceMapper::toDomain);
+    }
+
+    @Override
     public Model update(Model model) {
         ModelEntity entityToUpdate = modelPersistenceMapper.toEntity(model);
         ModelEntity updatedEntity = jpaRepository.save(entityToUpdate);
@@ -53,5 +60,4 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
 
         return modelPersistenceMapper.toDomain(entityToRemove);
     }
-
 }

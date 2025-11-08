@@ -5,6 +5,7 @@ import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceN
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -86,4 +87,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String specificMessage = ex.getMostSpecificCause().getMessage();
+
+        if (specificMessage != null && specificMessage.contains("Cannot coerce empty String")) {
+            return new ErrorResponse("Invalid data format. Empty strings are not allowed for object fields.");
+        }
+
+        return new ErrorResponse("JSON parse error: The request body is malformed or unreadable.");
+    }
 }

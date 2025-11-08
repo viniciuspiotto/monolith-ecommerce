@@ -1,8 +1,8 @@
 package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.CreateModelPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
@@ -15,13 +15,16 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Texture;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Log4j2
 @RequiredArgsConstructor
 public class CreateModelUseCase implements CreateModelPort {
 
@@ -32,6 +35,13 @@ public class CreateModelUseCase implements CreateModelPort {
     @Override
     @Transactional
     public ModelDTO execute(CreateModelCommand cmd) {
+        Optional<Model> optionalModel = modelRepositoryPort.findByTitle(cmd.title());
+
+        if (optionalModel.isPresent()) {
+            log.warn("Model with title '{}' already exists", cmd.title());
+            throw new IllegalArgumentException("Model with title " + cmd.title() + " already exists");
+        }
+
         FileStorageDTO thumbnailDTO = fileStoragePort.save(
                 cmd.thumbnailFile(),
                 ThumbnailType.ALLOWED_MIMETYPES

@@ -47,19 +47,27 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         DecodedJWT decodedJWT = tokenValidationService.validateToken(token);
 
         if (decodedJWT != null) {
-            String username = tokenValidationService.getSubject(decodedJWT);
+            String customerId = tokenValidationService.getClaim(decodedJWT, "customerId");
+
+            if (customerId == null) {
+                log.warn("Invalid JWT token: 'customerId' claim is missing.");
+                SecurityContextHolder.clearContext();
+                filterChain.doFilter(request, response);
+                return;
+            }
+
             List<String> roles = tokenValidationService.getRoles(decodedJWT);
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .collect(Collectors.toList());
 
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    username,
+                    customerId,
                     null,
                     authorities
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.debug("JWT token validated successfully for user: {}", username);
+            log.debug("JWT token validated successfully for user: {}", customerId);
         } else {
             log.warn("Invalid JWT token received.");
             SecurityContextHolder.clearContext();

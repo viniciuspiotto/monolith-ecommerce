@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Mapper(componentModel = "spring")
 public interface CategoryPersistenceMapper {
-    @Mapping(target = "id", ignore = true)
+    @Mapping(source = "categoryId.id", target = "id")
     CategoryEntity toEntity(Category category);
 
     default Category toDomain(CategoryEntity entity) {

@@ -25,7 +25,7 @@ import java.security.Principal;
 
 @RestController
 @Log4j2
-@RequestMapping("api/v1/users")
+@RequestMapping("users")
 @RequiredArgsConstructor
 public class UserController {
 

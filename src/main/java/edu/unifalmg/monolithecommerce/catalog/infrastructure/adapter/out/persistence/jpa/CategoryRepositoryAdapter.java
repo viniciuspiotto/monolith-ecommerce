@@ -24,16 +24,16 @@ public class CategoryRepositoryAdapter implements CategoryRepositoryPort {
     }
 
     @Override
-    public Category findById(UUID id) {
+    public Optional<Category> findById(UUID id) {
         Optional<CategoryEntity> categoryFound = JpaRepository.findById(id);
-        if (categoryFound.isEmpty()) {
-            throw new RuntimeException("Category with this id not found");
-        }
-        return categoryPersistenceMapper.toDomain(categoryFound.get());
+
+        return categoryFound.map(categoryPersistenceMapper::toDomain);
     }
 
     @Override
-    public Boolean existsByName(String name) {
-        return JpaRepository.existsByName(name);
+    public Optional<Category> findByName(String name) {
+        Optional<CategoryEntity> categoryFound = JpaRepository.findByName(name);
+
+        return categoryFound.map(categoryPersistenceMapper::toDomain);
     }
 }

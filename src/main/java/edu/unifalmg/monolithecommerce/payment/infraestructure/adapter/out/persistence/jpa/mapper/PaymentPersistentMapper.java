@@ -1,6 +1,5 @@
 package edu.unifalmg.monolithecommerce.payment.infraestructure.adapter.out.persistence.jpa.mapper;
 
-import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.ModelId;
 import edu.unifalmg.monolithecommerce.payment.domain.model.Payment;
 import edu.unifalmg.monolithecommerce.payment.domain.model.vo.PaymentId;
 import edu.unifalmg.monolithecommerce.payment.infraestructure.adapter.out.persistence.jpa.entities.PaymentEntity;

@@ -12,6 +12,18 @@ services:
     volumes:
       - elastic_data_dev:/usr/share/elasticsearch/data
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    command: redis-server --requirepass monolithPassword123
+
 volumes:
   elastic_data_dev:
+    driver: local
+
+  redis_data_dev:
     driver: local

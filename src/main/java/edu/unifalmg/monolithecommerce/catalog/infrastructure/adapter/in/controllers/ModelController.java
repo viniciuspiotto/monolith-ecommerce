@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/v1/models")
+@RequestMapping("models")
 @RequiredArgsConstructor
 public class ModelController {
     private final CreateModelPort createModelUseCase;

@@ -1,5 +1,6 @@
 package edu.unifalmg.monolithecommerce.catalog.domain.model;
 
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelRemovedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.ModelStatus;

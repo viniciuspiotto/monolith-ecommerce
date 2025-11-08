@@ -2,7 +2,7 @@ package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persis
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelSearchDTO;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
-import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.ModelId;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Rate;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.persistence.entities.ModelSearchDocument;

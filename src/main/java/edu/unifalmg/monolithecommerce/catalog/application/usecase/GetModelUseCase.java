@@ -9,6 +9,7 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class GetModelUseCase implements GetModelPort {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public ModelDTO execute(GetModelCommand cmd) {
         Model model = modelRepositoryPort.findById(cmd.id())
                 .orElseThrow(() -> new ResourceNotFoundException("Model not found with id: " + cmd.id()));
