@@ -48,3 +48,7 @@ server:
   servlet:
     session:
       timeout: 30m
+
+mercadoPago:
+  accessToken: ${MERCADO_PAGO_ACCESS_TOKEN}
+  notificationURL: ${MERCADO_PAGO_NOTIFICATION_URL}

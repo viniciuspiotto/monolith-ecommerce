@@ -45,7 +45,8 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/users",
-                                "/auth/login"
+                                "/auth/login",
+                                "/webhooks/mercadopago"    
                         ).permitAll()
                         .requestMatchers( "/carts/items").permitAll()
                         .anyRequest().authenticated()
