@@ -1,7 +1,7 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.local;
 
-import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -69,14 +72,13 @@ public class LocalStorageFileAdapter implements FileStoragePort {
 
             Files.copy(inputStream, destination, StandardCopyOption.REPLACE_EXISTING);
 
-            String publicUrl = this.baseUrl + uniqueFilename;
+//            String publicUrl = this.baseUrl + uniqueFilename;
 
             new StorageTransactionSynchronization(destination).register();
 
             return new FileStorageDTO(
                     uniqueFilename,
                     cmd.filename(),
-                    publicUrl,
                     validation.finalMimeType()
             );
         } catch (IOException e) {
@@ -100,6 +102,22 @@ public class LocalStorageFileAdapter implements FileStoragePort {
             Files.deleteIfExists(fileToDelete);
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file: " + uniqueName, e);
+        }
+    }
+
+    @Override
+    public URL generateUrl(String filename) {
+        if (filename == null || filename.isBlank()) {
+            return null;
+        }
+
+        try {
+            String fullUrl = this.baseUrl + filename;
+            return URI.create(fullUrl).toURL();
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Failed to generate URL. Check 'storage.local.base-url' configuration.", e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Failed to generate URL due to invalid syntax: " + this.baseUrl + filename, e);
         }
     }
 }

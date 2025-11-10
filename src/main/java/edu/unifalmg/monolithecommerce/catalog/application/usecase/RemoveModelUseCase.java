@@ -10,8 +10,8 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Texture;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +20,20 @@ import java.util.List;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class RemoveModelUseCase implements RemoveModelPort {
 
     ModelRepositoryPort modelRepositoryPort;
     FileStoragePort fileStoragePort;
-
     ModelMapper modelMapper;
+
+    public RemoveModelUseCase(
+            ModelRepositoryPort modelRepositoryPort,
+            @Qualifier("s3FileStorageAdapter") FileStoragePort fileStoragePort,
+            ModelMapper modelMapper) {
+        this.modelRepositoryPort = modelRepositoryPort;
+        this.fileStoragePort = fileStoragePort;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional

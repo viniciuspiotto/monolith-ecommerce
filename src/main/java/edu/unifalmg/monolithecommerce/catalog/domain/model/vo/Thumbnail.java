@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Thumbnail {
     private String uniqueName;
-    private final String url;
+    private String url;
     private final ThumbnailType type;
     private final String filename;
 

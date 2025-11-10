@@ -9,13 +9,12 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Mesh {
     private final String uniqueName;
-    private final String url;
     private final MeshType type;
     private final String filename;
 
-    public static Mesh create(String uniqueName, String url, String filename, String detectedMimeType) {
+    public static Mesh create(String uniqueName, String filename, String detectedMimeType) {
         MeshType meshType = MeshType.fromMimeType(detectedMimeType);
 
-        return new Mesh(uniqueName, url, meshType, filename);
+        return new Mesh(uniqueName, meshType, filename);
     }
 }

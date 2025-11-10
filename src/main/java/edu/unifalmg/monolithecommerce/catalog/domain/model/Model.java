@@ -61,6 +61,7 @@ public class Model extends AbstractAggregateRoot<Model> {
                 .categoryId(categoryId)
                 .averageRate(Rate.zero())
                 .status(ModelStatus.DRAFT)
+                .zipKey(null)
                 .build();
     }
 
@@ -149,6 +150,7 @@ public class Model extends AbstractAggregateRoot<Model> {
             UUID categoryId,
             Rate averageRate,
             ModelStatus status,
+            String zipKey,
             List<Mesh> meshes,
             List<Texture> textures
     ) {
@@ -160,6 +162,7 @@ public class Model extends AbstractAggregateRoot<Model> {
                 .price(price)
                 .categoryId(categoryId)
                 .averageRate(averageRate)
+                .zipKey(zipKey)
                 .status(status)
                 .build();
 

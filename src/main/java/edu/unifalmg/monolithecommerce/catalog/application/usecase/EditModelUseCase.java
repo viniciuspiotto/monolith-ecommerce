@@ -1,9 +1,9 @@
 package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
+import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.EditModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.mapper.ModelMapper;
 import edu.unifalmg.monolithecommerce.catalog.application.port.in.EditModelPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
@@ -16,19 +16,27 @@ import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Texture;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Thumbnail;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class EditModelUseCase implements EditModelPort {
 
     private final FileStoragePort fileStoragePort;
     private final ModelRepositoryPort modelRepositoryPort;
     private final ModelMapper modelMapper;
+
+    public EditModelUseCase(
+            ModelRepositoryPort modelRepositoryPort,
+            @Qualifier("s3FileStorageAdapter") FileStoragePort fileStoragePort,
+            ModelMapper modelMapper) {
+        this.modelRepositoryPort = modelRepositoryPort;
+        this.fileStoragePort = fileStoragePort;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     @Transactional
@@ -84,9 +92,9 @@ public class EditModelUseCase implements EditModelPort {
 
         Thumbnail newThumbnail = Thumbnail.create(
                 thumbnailDTO.uniqueName(),
-                thumbnailDTO.url(),
                 thumbnailDTO.filename(),
-                thumbnailDTO.type()
+                thumbnailDTO.type(),
+                ""
         );
 
         existingModel.changeThumbnail(newThumbnail);
@@ -116,7 +124,6 @@ public class EditModelUseCase implements EditModelPort {
                 );
                 Mesh newMesh = Mesh.create(
                         meshDTO.uniqueName(),
-                        meshDTO.url(),
                         meshDTO.filename(),
                         meshDTO.type()
                 );
@@ -149,7 +156,6 @@ public class EditModelUseCase implements EditModelPort {
                 );
                 Texture newTexture = Texture.create(
                         textureDTO.uniqueName(),
-                        textureDTO.url(),
                         textureDTO.filename(),
                         textureDTO.type()
                 );

@@ -17,6 +17,7 @@ public record CreateModelCommand(
 ) {
     public record FileCommand(
             String filename,
-            InputStream contentStream
+            InputStream contentStream,
+            long size
     ) {}
 }

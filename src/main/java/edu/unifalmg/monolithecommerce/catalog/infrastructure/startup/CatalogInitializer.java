@@ -69,7 +69,7 @@ public class CatalogInitializer implements CommandLineRunner {
 
         Thumbnail thumbnail = Thumbnail.create(
                 baseName + "_thumb.png",
-                "http://example.com/assets/" + baseName + "_thumb.png",
+                "",
                 "thumbnail.png",
                 "image/png"
         );
@@ -84,7 +84,6 @@ public class CatalogInitializer implements CommandLineRunner {
 
         Mesh mesh = Mesh.create(
                 baseName + ".fbx",
-                "http://example.com/assets/" + baseName + ".fbx",
                 "model.fbx",
                 "application/vnd.autodesk.fbx"
         );
@@ -92,7 +91,6 @@ public class CatalogInitializer implements CommandLineRunner {
 
         Texture texture = Texture.create(
                 baseName + "_tex.png",
-                "http://example.com/assets/" + baseName + "_tex.png",
                 "texture.png",
                 "image/png"
         );

@@ -16,7 +16,6 @@ import lombok.Setter;
 @Embeddable
 public class TextureEmbeddable {
     private String uniqueName;
-    private String url;
     private String filename;
 
     @Enumerated(EnumType.STRING)

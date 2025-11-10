@@ -66,6 +66,7 @@ public interface ModelPersistenceMapper {
                 entity.getCategoryId(),
                 averageRate,
                 entity.getStatus(),
+                null,
                 meshes,
                 textures
         );
@@ -77,8 +78,8 @@ public interface ModelPersistenceMapper {
         }
         return Thumbnail.create(
                 embeddable.getUniqueName(),
-                embeddable.getUrl(),
                 embeddable.getFilename(),
+                embeddable.getUrl(),
                 embeddable.getType().getMimeType()
         );
     }
@@ -90,7 +91,6 @@ public interface ModelPersistenceMapper {
 
         return Mesh.create(
                 embeddable.getUniqueName(),
-                embeddable.getUrl(),
                 embeddable.getFilename(),
                 embeddable.getType().getMimeType()
         );
@@ -103,7 +103,6 @@ public interface ModelPersistenceMapper {
 
         return Texture.create(
                 embeddable.getUniqueName(),
-                embeddable.getUrl(),
                 embeddable.getFilename(),
                 embeddable.getType().getMimeType()
         );

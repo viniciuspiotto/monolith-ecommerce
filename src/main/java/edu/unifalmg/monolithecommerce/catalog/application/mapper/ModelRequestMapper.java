@@ -4,6 +4,7 @@ import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.*;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.UpdateZipKeyModelRequest;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -43,6 +44,9 @@ public interface ModelRequestMapper {
 
     RemoveModelCommand toRemoveCommand(UUID id);
 
+    @Mapping(source = "request.zipFileKey", target = "zipFileKey")
+    UpdateZipKeyCommand toUpdateZipKeyCommand(UUID id, UpdateZipKeyModelRequest request);
+
     default Money bigDecimalToMoney(BigDecimal value) {
         if (value == null) {
             return null;
@@ -67,7 +71,8 @@ public interface ModelRequestMapper {
         try {
             return new CreateModelCommand.FileCommand(
                     file.getOriginalFilename(),
-                    file.getInputStream()
+                    file.getInputStream(),
+                    file.getSize()
             );
         } catch (IOException e) {
             throw new RuntimeException("Failed to read file input stream: " + file.getOriginalFilename(), e);

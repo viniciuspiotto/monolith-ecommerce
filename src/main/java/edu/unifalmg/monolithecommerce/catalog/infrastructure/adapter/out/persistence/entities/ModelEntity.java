@@ -40,11 +40,11 @@ public class ModelEntity {
     @Embedded
     private ThumbnailEmbeddable thumbnail;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "catalog_model_meshes", joinColumns = @JoinColumn(name = "model_id"))
     private List<MeshEmbeddable> meshes;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "catalog_model_textures", joinColumns = @JoinColumn(name = "model_id"))
     private List<TextureEmbeddable> textures;
 
