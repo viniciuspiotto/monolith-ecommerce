@@ -2,18 +2,20 @@ package edu.unifalmg.monolithecommerce.payment.domain.model;
 
 import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentClient;
 import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
+import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
 import edu.unifalmg.monolithecommerce.payment.domain.model.vo.PaymentId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class Payment {
+public class Payment extends AbstractAggregateRoot<Payment> {
 
     private PaymentId paymentId;
     private String preferenceId;
@@ -59,6 +61,10 @@ public class Payment {
             throw new IllegalArgumentException("Status cannot be null");
         }
         this.status = newStatus;
+        this.registerEvent(new PaymentChangeStatusEvent(
+                this.orderId,
+                newStatus
+        ));
     }
 
     public static Payment rehydrate(

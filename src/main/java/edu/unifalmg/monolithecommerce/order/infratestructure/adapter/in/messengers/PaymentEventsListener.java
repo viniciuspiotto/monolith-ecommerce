@@ -1,0 +1,30 @@
+package edu.unifalmg.monolithecommerce.order.infratestructure.adapter.in.messengers;
+
+import edu.unifalmg.monolithecommerce.order.application.dto.commands.UpdateOrderStatusCommand;
+import edu.unifalmg.monolithecommerce.order.application.port.in.UpdateOrderStatusPort;
+import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class PaymentEventsListener {
+
+    private final PaymentStatusMapper paymentStatusMapper;
+    private final UpdateOrderStatusPort updateOrderStatusPort;
+
+    @TransactionalEventListener
+    public void handlePaymentStatusUpdateEvent(PaymentChangeStatusEvent event) {
+
+        try {
+            UpdateOrderStatusCommand updateOrderStatusCommand = paymentStatusMapper.toCommand(event);
+            updateOrderStatusPort.execute(updateOrderStatusCommand);
+        } catch (Exception e) {
+            log.error("Failed to change status with order with Id: {} {}", event.orderId(), e.getMessage(), e);
+        }
+    }
+
+}

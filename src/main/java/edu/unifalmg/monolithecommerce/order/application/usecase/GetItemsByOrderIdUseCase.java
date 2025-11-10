@@ -1,28 +1,27 @@
 package edu.unifalmg.monolithecommerce.order.application.usecase;
 
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.GetItemsByOrderIdPort;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.Item;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.OrderId;
-import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
+import edu.unifalmg.monolithecommerce.order.application.port.out.OrderRepositoryPort;
+import edu.unifalmg.monolithecommerce.order.domain.model.Order;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.GetItemsByOrderIdPort;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.OrderId;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.OrderItem;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class GetItemsByOrderIdUseCase implements GetItemsByOrderIdPort {
 
-    public List<Item> execute (OrderId orderId) {
+    private final OrderRepositoryPort orderRepositoryPort;
 
-        Money money1 = new Money(BigDecimal.valueOf(50.00));
-        Item item1 = new Item(UUID.randomUUID(), "Magic Altar 3d Prop", money1);
-
-        Money money2 = new Money(BigDecimal.valueOf(80.00));
-        Item item2 = new Item(UUID.randomUUID(), "Magic Stag 3d Prop", money2);
-
-        return List.of(item1, item2);
-
+    public List<OrderItem> execute (OrderId orderId) {
+        Order order = orderRepositoryPort.findById(orderId.orderId());
+        if(order == null){
+            throw new RuntimeException("Failed to find order with orderId.");
+        }
+        return order.getOrderItems();
     }
 
 }

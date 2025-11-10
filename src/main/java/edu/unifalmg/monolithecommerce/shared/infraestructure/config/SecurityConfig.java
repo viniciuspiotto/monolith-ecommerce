@@ -46,8 +46,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/users",
                                 "/auth/login",
-                                "/webhooks/mercadopago"    
+                                "/webhooks/mercadopago"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/models/{id}/zip-key").permitAll()
                         .requestMatchers( "/carts/items").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -1,8 +1,8 @@
 package edu.unifalmg.monolithecommerce.payment.application.usecase;
 
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.Item;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.OrderId;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.Payer;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.OrderId;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.OrderItem;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.Payer;
 import edu.unifalmg.monolithecommerce.payment.application.dto.CreatePaymentResponseDTO;
 import edu.unifalmg.monolithecommerce.payment.application.dto.commands.CreatePaymentCommand;
 import edu.unifalmg.monolithecommerce.payment.application.port.in.CreatePaymentPort;
@@ -40,7 +40,7 @@ public class CreatePaymentUseCase implements CreatePaymentPort {
 
         Payer payer = orderService.getPayerByOrderId(orderId);
         log.info("Getting a payer with order paymentId {}: {}", cmd.orderId(), payer.email());
-        List<Item> items = orderService.getItemListByOrderId(orderId);
+        List<OrderItem> items = orderService.getItemListByOrderId(orderId);
         log.info("Getting a list of items with order paymentId: {}", cmd.orderId());
         Money amount = orderService.getTotalAmountOrderByOrderId(orderId);
         log.info("Getting a amount of order with order paymentId {}: {}", cmd.orderId(), amount.getAmount());

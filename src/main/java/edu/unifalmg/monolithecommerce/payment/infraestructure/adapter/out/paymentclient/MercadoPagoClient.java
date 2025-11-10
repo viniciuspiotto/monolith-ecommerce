@@ -6,13 +6,12 @@ import com.mercadopago.client.preference.*;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.Item;
-import edu.unifalmg.monolithecommerce.order.infratestructure.adapter.out.api.Payer;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.OrderItem;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.Payer;
 import edu.unifalmg.monolithecommerce.payment.application.dto.CreatePaymentResponseDTO;
 import edu.unifalmg.monolithecommerce.payment.application.dto.ProcessStatusDTO;
 import edu.unifalmg.monolithecommerce.payment.application.port.out.PaymentClientPort;
 import edu.unifalmg.monolithecommerce.payment.domain.model.Payment;
-import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,7 +39,7 @@ public class MercadoPagoClient implements PaymentClientPort {
     }
 
     @Override
-    public CreatePaymentResponseDTO createPreference(Payment payment, List<Item> ListItems, Payer payer)   {
+    public CreatePaymentResponseDTO createPreference(Payment payment, List<OrderItem> ListItems, Payer payer)   {
 
         try {
 
@@ -48,11 +47,11 @@ public class MercadoPagoClient implements PaymentClientPort {
 
             List<PreferenceItemRequest> items = ListItems.stream().map(
                     item -> PreferenceItemRequest.builder()
-                            .id(item.id().toString())
-                            .title(item.name())
+                            .id(item.getId().toString())
+                            .title(item.getName())
                             .quantity(1)
-                            .unitPrice(item.value().getAmount())
-                            .currencyId(item.value().getCurrency().getCurrencyCode())
+                            .unitPrice(item.getPrice().getAmount())
+                            .currencyId(item.getPrice().getCurrency().getCurrencyCode())
                             .build()
             ).toList();
 

@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UpdateOrderStatusUseCase implements UpdateOrderStatusPort {
 
-    private OrderRepositoryPort orderRepositoryPort;
-    private OrderMapper orderMapper;
+    private final OrderRepositoryPort orderRepositoryPort;
+    private final OrderMapper orderMapper;
 
     @Override
     @Transactional
