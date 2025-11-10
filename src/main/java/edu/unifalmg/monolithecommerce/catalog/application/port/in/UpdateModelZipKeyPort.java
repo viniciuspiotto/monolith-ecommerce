@@ -1,0 +1,8 @@
+package edu.unifalmg.monolithecommerce.catalog.application.port.in;
+
+import edu.unifalmg.monolithecommerce.catalog.application.dto.ModelDTO;
+import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.UpdateZipKeyCommand;
+
+public interface UpdateModelZipKeyPort {
+    ModelDTO execute(UpdateZipKeyCommand cmd);
+}

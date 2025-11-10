@@ -52,3 +52,10 @@ server:
 mercadoPago:
   accessToken: ${MERCADO_PAGO_ACCESS_TOKEN}
   notificationURL: ${MERCADO_PAGO_NOTIFICATION_URL}
+
+aws:
+  accessKeyId: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
+  bucketName: ${AWS_S3_BUCKET_NAME}
+  queueUrl: ${AWS_SQS_QUEUE_URL}

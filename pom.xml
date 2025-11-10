@@ -34,6 +34,7 @@
         <java-jwt.version>4.4.0</java-jwt.version>
         <caelum.stella.version>2.1.2</caelum.stella.version>
         <mercado.pago.version>2.5.0</mercado.pago.version>
+        <amazon.awssdk.version>2.38.2</amazon.awssdk.version>
     </properties>
     <dependencies>
         <dependency>
@@ -128,6 +129,17 @@
             <groupId>com.mercadopago</groupId>
             <artifactId>sdk-java</artifactId>
             <version>${mercado.pago.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+            <version>${amazon.awssdk.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sqs</artifactId>
+            <version>${amazon.awssdk.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

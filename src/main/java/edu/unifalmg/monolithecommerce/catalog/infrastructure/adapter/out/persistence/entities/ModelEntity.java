@@ -26,6 +26,7 @@ public class ModelEntity {
 
     private String title;
     private String description;
+    private String zipKey;
 
     @Column(precision = 19, scale = 4)
     private BigDecimal price;

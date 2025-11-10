@@ -28,6 +28,7 @@ public class Model extends AbstractAggregateRoot<Model> {
     private UUID categoryId;
     private Rate averageRate;
     private ModelStatus status;
+    private String zipKey;
     private final List<Mesh> meshes = new ArrayList<>();
     private final List<Texture> textures = new ArrayList<>();
 
@@ -63,6 +64,13 @@ public class Model extends AbstractAggregateRoot<Model> {
                 .status(ModelStatus.DRAFT)
                 .zipKey(null)
                 .build();
+    }
+
+    public void changeZipKey (String zipKey) {
+        if (zipKey == null || zipKey.isBlank()) {
+            throw new IllegalArgumentException("Zip key cannot be null or blank");
+        }
+        this.zipKey = zipKey;
     }
 
     public void updateRate(Rate rate) {
