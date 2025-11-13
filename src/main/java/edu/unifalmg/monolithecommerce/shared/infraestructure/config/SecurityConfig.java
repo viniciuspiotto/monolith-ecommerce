@@ -1,6 +1,6 @@
 package edu.unifalmg.monolithecommerce.shared.infraestructure.config;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,10 +19,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
+    private final TokenValidationService tokenValidationService;
+    private final String jwtCookieName;
+
+    public SecurityConfig(TokenValidationService tokenValidationService,
+                          @Value("${api.security.cookie.name}") String jwtCookieName) {
+        this.tokenValidationService = tokenValidationService;
+        this.jwtCookieName = jwtCookieName;
+    }
 
     private static final String[] PUBLIC_MATCHERS = {
             "/swagger-ui.html",
@@ -32,6 +38,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        JwtAuthorizationFilter jwtFilter = new JwtAuthorizationFilter(tokenValidationService, jwtCookieName);
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
@@ -49,10 +57,11 @@ public class SecurityConfig {
                                 "/webhooks/mercadopago"
                         ).permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/models/{id}/zip-key").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
                         .requestMatchers( "/carts/items").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

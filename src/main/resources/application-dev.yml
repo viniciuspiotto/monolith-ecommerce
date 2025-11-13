@@ -59,3 +59,37 @@ aws:
   region: ${AWS_REGION}
   bucketName: ${AWS_S3_BUCKET_NAME}
   queueUrl: ${AWS_SQS_QUEUE_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
+otel:
+  service:
+    name: monolith-ecommerce
+
+  exporter:
+    otlp:
+      endpoint: http://localhost:4318
+
+  logs:
+    exporter: none
+
+  metrics:
+    exporter: none
+
+  traces:
+    sampler:
+      arg: 1
+    exporter: otlp
+
+  propagators: tracecontext,baggage
