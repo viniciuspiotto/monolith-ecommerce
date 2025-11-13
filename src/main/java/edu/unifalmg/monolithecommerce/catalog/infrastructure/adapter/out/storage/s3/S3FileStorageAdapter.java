@@ -3,8 +3,8 @@ package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storag
 import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.local.MimeTypeValidationStrategy;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.local.StorageFileUtils;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils.MimeTypeValidationStrategy;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils.StorageFileUtils;
 import lombok.extern.log4j.Log4j2;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +33,7 @@ public class S3FileStorageAdapter implements FileStoragePort {
     private final S3Presigner s3Presigner;
     private final MimeTypeValidationStrategy validationStrategy;
     private final String s3BucketName;
+    private final String region;
 
     private static final Tika TIKA_DETECTOR = new Tika();
 
@@ -41,16 +42,18 @@ public class S3FileStorageAdapter implements FileStoragePort {
             S3Client s3Client,
             S3Presigner s3Presigner,
             MimeTypeValidationStrategy validationStrategy,
-            @Value("${aws.bucketName}") String s3BucketName
+            @Value("${aws.bucketName}") String s3BucketName,
+            @Value("${aws.region}") String region
     ) {
         this.s3Client = s3Client;
         this.s3Presigner = s3Presigner;
         this.validationStrategy = validationStrategy;
         this.s3BucketName = s3BucketName;
+        this.region = region;
     }
 
     @Override
-    public FileStorageDTO save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes) {
+    public FileStorageDTO save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes, boolean isPublic) {
         try (InputStream inputStream = new BufferedInputStream(cmd.contentStream())) {
 
             inputStream.mark(1024 * 1024);
@@ -76,18 +79,26 @@ public class S3FileStorageAdapter implements FileStoragePort {
             String extension = StorageFileUtils.getExtension(cmd.filename());
             String uniqueFilename = UUID.randomUUID() + extension;
 
+            String key;
+            String url = null;
+
+            if (isPublic) {
+                key = "thumbnails/" + uniqueFilename;
+                url = "https://" + s3BucketName + ".s3." + region + ".amazonaws.com" + "/" + key;
+            } else {
+                key = uniqueFilename;
+            }
+
             try {
                 PutObjectRequest putRequest = PutObjectRequest.builder()
                         .bucket(this.s3BucketName)
-                        .key(uniqueFilename)
+                        .key(key)
                         .contentType(validation.finalMimeType())
                         .contentLength(cmd.size())
-                        .acl(ObjectCannedACL.PRIVATE)
                         .build();
 
                 s3Client.putObject(putRequest, RequestBody.fromInputStream(inputStream, cmd.size()));
                 log.info("File stored successfully in S3. Bucket: {}, Key: {}", this.s3BucketName, uniqueFilename);
-
             } catch (SdkException e) {
                 log.error("Failed to put object in S3. Bucket: {}, Key: {}", this.s3BucketName, uniqueFilename, e);
                 throw new RuntimeException("Failed to store file in S3.", e);
@@ -96,6 +107,7 @@ public class S3FileStorageAdapter implements FileStoragePort {
             return new FileStorageDTO(
                     uniqueFilename,
                     cmd.filename(),
+                    url,
                     validation.finalMimeType()
             );
 

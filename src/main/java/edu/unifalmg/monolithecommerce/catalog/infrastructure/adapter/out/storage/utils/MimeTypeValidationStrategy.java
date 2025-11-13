@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.local;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils;
 
 import edu.unifalmg.monolithecommerce.catalog.domain.model.enums.MeshType;
 import org.springframework.stereotype.Component;

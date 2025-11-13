@@ -19,9 +19,9 @@ public interface ModelMapper {
     @Mapping(source = "textures", target = "textures")
     ModelDTO toDTO(Model model);
 
-    ModelDTO.FileDTO thumbnailToFileDTO(Thumbnail thumbnail);
+    ModelDTO.FileWithoutURLDTO thumbnailToFileDTO(Thumbnail thumbnail);
 
-    ModelDTO.FileDTO meshToFileDTO(Mesh mesh);
+    ModelDTO.FileWithoutURLDTO meshToFileDTO(Mesh mesh);
 
     ModelDTO.FileDTO textureToFileDTO(Texture texture);
 

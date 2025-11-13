@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.local;
+package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils;
 
 import lombok.NoArgsConstructor;
 

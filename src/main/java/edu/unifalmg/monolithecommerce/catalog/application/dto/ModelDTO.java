@@ -15,13 +15,19 @@ public record ModelDTO (
         UUID categoryId,
         double averageRate,
         ModelStatus status,
-        List<FileDTO> meshes,
-        List<FileDTO> textures) {
+        List<FileWithoutURLDTO> meshes,
+        List<FileWithoutURLDTO> textures) {
 
     public record FileDTO(
             String uniqueName,
             String filename,
             String url,
+            String type
+    ) {}
+
+    public record FileWithoutURLDTO(
+            String uniqueName,
+            String filename,
             String type
     ) {}
 }

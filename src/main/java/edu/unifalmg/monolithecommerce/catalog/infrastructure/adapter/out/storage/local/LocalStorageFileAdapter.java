@@ -3,6 +3,8 @@ package edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storag
 import edu.unifalmg.monolithecommerce.catalog.application.dto.FileStorageDTO;
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.CreateModelCommand;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils.MimeTypeValidationStrategy;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.out.storage.utils.StorageFileUtils;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,7 +47,7 @@ public class LocalStorageFileAdapter implements FileStoragePort {
     }
 
     @Override
-    public FileStorageDTO save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes) {
+    public FileStorageDTO save(CreateModelCommand.FileCommand cmd, Set<String> allowedMimeTypes, boolean isPublic) {
         try (InputStream inputStream = new BufferedInputStream(cmd.contentStream())) {
             inputStream.mark(1024 * 1024);
 
@@ -79,6 +81,7 @@ public class LocalStorageFileAdapter implements FileStoragePort {
             return new FileStorageDTO(
                     uniqueFilename,
                     cmd.filename(),
+                    "",
                     validation.finalMimeType()
             );
         } catch (IOException e) {

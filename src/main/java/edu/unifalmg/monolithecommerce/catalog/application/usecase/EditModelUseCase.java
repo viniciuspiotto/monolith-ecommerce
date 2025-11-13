@@ -87,7 +87,8 @@ public class EditModelUseCase implements EditModelPort {
 
         FileStorageDTO thumbnailDTO = fileStoragePort.save(
                 newThumbnailFile,
-                ThumbnailType.ALLOWED_MIMETYPES
+                ThumbnailType.ALLOWED_MIMETYPES,
+                true
         );
 
         Thumbnail newThumbnail = Thumbnail.create(
@@ -120,7 +121,8 @@ public class EditModelUseCase implements EditModelPort {
             for (CreateModelCommand.FileCommand meshCommand : newMeshFiles) {
                 FileStorageDTO meshDTO = fileStoragePort.save(
                         meshCommand,
-                        MeshType.ALLOWED_MIMETYPES
+                        MeshType.ALLOWED_MIMETYPES,
+                        false
                 );
                 Mesh newMesh = Mesh.create(
                         meshDTO.uniqueName(),
@@ -152,7 +154,8 @@ public class EditModelUseCase implements EditModelPort {
             for (CreateModelCommand.FileCommand textureCommand : newTextureFiles) {
                 FileStorageDTO textureDTO = fileStoragePort.save(
                         textureCommand,
-                        TextureType.ALLOWED_MIMETYPES
+                        TextureType.ALLOWED_MIMETYPES,
+                        false
                 );
                 Texture newTexture = Texture.create(
                         textureDTO.uniqueName(),

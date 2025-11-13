@@ -55,21 +55,22 @@ public class CreateModelUseCase implements CreateModelPort {
 
         FileStorageDTO thumbnailDTO = fileStoragePort.save(
                 cmd.thumbnailFile(),
-                ThumbnailType.ALLOWED_MIMETYPES
+                ThumbnailType.ALLOWED_MIMETYPES,
+                true
         );
 
         Map<String, ZipRequestPayload.ModelTypeFile> s3FileMap = new HashMap<>();
 
         List<FileStorageDTO> meshesDTO = new ArrayList<>();
         for (CreateModelCommand.FileCommand meshCommand : cmd.meshFiles()) {
-            FileStorageDTO storedMesh = fileStoragePort.save(meshCommand, MeshType.ALLOWED_MIMETYPES);
+            FileStorageDTO storedMesh = fileStoragePort.save(meshCommand, MeshType.ALLOWED_MIMETYPES, false);
             meshesDTO.add(storedMesh);
             s3FileMap.put(storedMesh.uniqueName(), ZipRequestPayload.ModelTypeFile.MESH);
         }
 
         List<FileStorageDTO> texturesDTO = new ArrayList<>();
         for (CreateModelCommand.FileCommand textureCommand : cmd.textureFiles()) {
-            FileStorageDTO storedTexture = fileStoragePort.save(textureCommand, TextureType.ALLOWED_MIMETYPES);
+            FileStorageDTO storedTexture = fileStoragePort.save(textureCommand, TextureType.ALLOWED_MIMETYPES, false);
             texturesDTO.add(storedTexture);
             s3FileMap.put(storedTexture.uniqueName(), ZipRequestPayload.ModelTypeFile.TEXTURE);
         }
@@ -77,7 +78,7 @@ public class CreateModelUseCase implements CreateModelPort {
         Thumbnail thumbnail = Thumbnail.create(
                 thumbnailDTO.uniqueName(),
                 thumbnailDTO.filename(),
-                "",
+                thumbnailDTO.url(),
                 thumbnailDTO.type()
         );
 
