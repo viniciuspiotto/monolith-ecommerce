@@ -66,7 +66,7 @@ public interface ModelPersistenceMapper {
                 entity.getCategoryId(),
                 averageRate,
                 entity.getStatus(),
-                null,
+                entity.getZipKey(),
                 meshes,
                 textures
         );
