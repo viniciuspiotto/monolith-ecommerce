@@ -5,7 +5,7 @@ import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.CheckoutCar
 import edu.unifalmg.monolithecommerce.cart.application.mappers.CartMapper;
 import edu.unifalmg.monolithecommerce.cart.application.ports.in.CheckoutCartPort;
 import edu.unifalmg.monolithecommerce.cart.application.ports.out.CartRepositoryPort;
-import edu.unifalmg.monolithecommerce.cart.domain.events.CartCheckoutEvent;
+import edu.unifalmg.monolithecommerce.cart.infrastructure.api.CartCheckoutEvent;
 import edu.unifalmg.monolithecommerce.cart.domain.model.Cart;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -37,14 +37,8 @@ public class CheckoutCartUseCase implements CheckoutCartPort {
         log.info("Do a checkout in a cart");
 
         cart.get().checkout();
-        publisher.publishEvent(new CartCheckoutEvent(
-                cart.get().getCartId(),
-                cart.get().getCustomerId(),
-                Collections.unmodifiableSet(cart.get().getItems()),
-                cart.get().getTotalAmount(),
-                cart.get().getUpdatedAt()
-        ));
 
+        publisher.publishEvent(cartMapper.toEvent(cart.get()));
         CartDTO cartDTO = cartMapper.toDTO(cart.get());
 
         cart.get().clearCart();

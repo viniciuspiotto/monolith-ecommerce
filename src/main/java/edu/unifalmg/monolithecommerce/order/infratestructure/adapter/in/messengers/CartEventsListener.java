@@ -1,13 +1,12 @@
 package edu.unifalmg.monolithecommerce.order.infratestructure.adapter.in.messengers;
 
-import edu.unifalmg.monolithecommerce.cart.domain.events.CartCheckoutEvent;
+import edu.unifalmg.monolithecommerce.cart.infrastructure.api.CartCheckoutEvent;
 import edu.unifalmg.monolithecommerce.order.application.dto.commands.CreateOrderCommand;
 import edu.unifalmg.monolithecommerce.order.application.port.in.CreateOrderPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component

@@ -2,7 +2,6 @@ package edu.unifalmg.monolithecommerce.payment.domain.model;
 
 import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentClient;
 import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
-import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
 import edu.unifalmg.monolithecommerce.payment.domain.model.vo.PaymentId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.AccessLevel;

@@ -1,4 +1,4 @@
-package edu.unifalmg.monolithecommerce.cart.domain.events;
+package edu.unifalmg.monolithecommerce.cart.infrastructure.api;
 
 import edu.unifalmg.monolithecommerce.cart.domain.model.CartItem;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
@@ -10,7 +10,7 @@ import java.util.UUID;
 public record CartCheckoutEvent(
         UUID cartId,
         UUID customerId,
-        Set<CartItem> items,
+        Set<CartItemDTO> items,
         Money totalAmount,
         Instant checkoutAt
 ) {

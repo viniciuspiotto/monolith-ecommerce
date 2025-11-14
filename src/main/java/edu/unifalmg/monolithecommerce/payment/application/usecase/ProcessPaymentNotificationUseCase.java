@@ -6,8 +6,7 @@ import edu.unifalmg.monolithecommerce.payment.application.port.in.ProcessPayment
 import edu.unifalmg.monolithecommerce.payment.application.port.out.PaymentClientPort;
 import edu.unifalmg.monolithecommerce.payment.application.port.out.PaymentRepositoryPort;
 import edu.unifalmg.monolithecommerce.payment.domain.model.Payment;
-import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
-import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.PaymentChangeStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,9 +43,8 @@ public class ProcessPaymentNotificationUseCase implements ProcessPaymentNotifica
         payment.get().changeStatus(status.status());
 
         applicationEventPublisher.publishEvent(
-                new PaymentChangeStatusEvent(payment.get().getOrderId(), payment.get().getStatus())
+                new PaymentChangeStatusEvent(payment.get().getOrderId(), payment.get().getStatus().toString())
         );
-
 
         paymentRepository.save(payment.get());
 

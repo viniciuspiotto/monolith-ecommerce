@@ -1,12 +1,10 @@
 package edu.unifalmg.monolithecommerce.cart.domain.model;
 
-import edu.unifalmg.monolithecommerce.cart.domain.events.CartCheckoutEvent;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.io.Serializable;
 import java.time.Instant;

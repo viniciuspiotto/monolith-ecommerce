@@ -2,12 +2,11 @@ package edu.unifalmg.monolithecommerce.order.infratestructure.adapter.in.messeng
 
 import edu.unifalmg.monolithecommerce.order.application.dto.commands.UpdateOrderStatusCommand;
 import edu.unifalmg.monolithecommerce.order.application.port.in.UpdateOrderStatusPort;
-import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.PaymentChangeStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
