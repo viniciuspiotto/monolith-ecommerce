@@ -10,12 +10,13 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class Payment extends AbstractAggregateRoot<Payment> {
+public class Payment extends AbstractAggregateRoot<Payment> implements Serializable {
 
     private PaymentId paymentId;
     private String preferenceId;
@@ -61,10 +62,6 @@ public class Payment extends AbstractAggregateRoot<Payment> {
             throw new IllegalArgumentException("Status cannot be null");
         }
         this.status = newStatus;
-        this.registerEvent(new PaymentChangeStatusEvent(
-                this.orderId,
-                newStatus
-        ));
     }
 
     public static Payment rehydrate(

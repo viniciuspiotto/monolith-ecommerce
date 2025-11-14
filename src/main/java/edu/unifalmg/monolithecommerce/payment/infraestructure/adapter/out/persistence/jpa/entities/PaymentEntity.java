@@ -4,10 +4,11 @@ import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentClient;
 import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.domain.AfterDomainEventPublication;
+import org.springframework.data.domain.DomainEvents;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "payment_models")
@@ -33,4 +34,20 @@ public class PaymentEntity {
     @Enumerated(EnumType.STRING)
     private PaymentClient client;
 
+    @Transient
+    private final transient List<Object> domainEvents = new ArrayList<>();
+
+    @DomainEvents
+    public Collection<Object> getDomainEvents() {
+        return Collections.unmodifiableList(domainEvents);
+    }
+
+    @AfterDomainEventPublication
+    public void clearDomainEvents() {
+        this.domainEvents.clear();
+    }
+
+    public void setDomainEvents(Collection<Object> events) {
+        this.domainEvents.addAll(events);
+    }
 }
