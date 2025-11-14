@@ -8,6 +8,8 @@ import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class GetTotalAmountOrderByOrderIdUseCase implements GetTotalAmountOrderByOrderIdPort {
@@ -15,10 +17,10 @@ public class GetTotalAmountOrderByOrderIdUseCase implements GetTotalAmountOrderB
     private final OrderRepositoryPort orderRepositoryPort;
 
     public Money execute(OrderId orderid){
-        Order order = orderRepositoryPort.findById(orderid.orderId());
-        if(order == null){
+        Optional<Order> order = orderRepositoryPort.findById(orderid.orderId());
+        if(order.isEmpty()){
             throw new RuntimeException("Failed to find order with orderId.");
         }
-        return order.getTotalAmount();
+        return order.get().getTotalAmount();
     }
 }

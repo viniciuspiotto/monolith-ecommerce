@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +18,11 @@ public class GetItemsByOrderIdUseCase implements GetItemsByOrderIdPort {
     private final OrderRepositoryPort orderRepositoryPort;
 
     public List<OrderItem> execute (OrderId orderId) {
-        Order order = orderRepositoryPort.findById(orderId.orderId());
-        if(order == null){
+        Optional<Order> order = orderRepositoryPort.findById(orderId.orderId());
+        if(order.isEmpty()){
             throw new RuntimeException("Failed to find order with orderId.");
         }
-        return order.getOrderItems();
+        return order.get().getOrderItems();
     }
 
 }

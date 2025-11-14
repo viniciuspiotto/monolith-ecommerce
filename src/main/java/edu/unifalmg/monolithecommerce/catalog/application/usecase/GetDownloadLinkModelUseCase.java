@@ -1,10 +1,11 @@
 package edu.unifalmg.monolithecommerce.catalog.application.usecase;
 
 import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.GetDownloadLinkModelCommand;
-import edu.unifalmg.monolithecommerce.catalog.application.port.in.GetDownloadLinkModelPort;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.GetDownloadLinkModelPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.FileStoragePort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.ModelRepositoryPort;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
+import edu.unifalmg.monolithecommerce.catalog.infrastructure.api.ModelId;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -28,8 +29,8 @@ public class GetDownloadLinkModelUseCase implements GetDownloadLinkModelPort {
     }
 
     @Override
-    public URL execute(GetDownloadLinkModelCommand cmd){
-        Optional<Model> model = modelRepositoryPort.findById(cmd.modelId());
+    public URL execute(ModelId modelId){
+        Optional<Model> model = modelRepositoryPort.findById(modelId.id());
         if(model.isEmpty()){
             throw new IllegalArgumentException("The model with this id not exists");
         }

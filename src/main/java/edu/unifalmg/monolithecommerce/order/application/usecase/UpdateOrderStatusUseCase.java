@@ -7,11 +7,15 @@ import edu.unifalmg.monolithecommerce.order.application.port.in.UpdateOrderStatu
 import edu.unifalmg.monolithecommerce.order.application.port.out.OrderRepositoryPort;
 import edu.unifalmg.monolithecommerce.order.domain.model.Order;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UpdateOrderStatusUseCase implements UpdateOrderStatusPort {
 
     private final OrderRepositoryPort orderRepositoryPort;
@@ -20,12 +24,13 @@ public class UpdateOrderStatusUseCase implements UpdateOrderStatusPort {
     @Override
     @Transactional
     public OrderDTO execute (UpdateOrderStatusCommand cmd){
-        Order order = orderRepositoryPort.findById(cmd.orderId());
-        if(order == null){
+        Optional<Order> order = orderRepositoryPort.findById(cmd.orderId());
+        if(order.isEmpty()){
             throw new IllegalArgumentException("A order with this id not found");
         }
-        order.changeOrderStatus(cmd.orderStatus());
-        Order orderUpdated = orderRepositoryPort.save(order);
+        log.info("Change a status to: {}", cmd.orderStatus());
+        order.get().changeOrderStatus(cmd.orderStatus());
+        Order orderUpdated = orderRepositoryPort.save(order.get());
         return orderMapper.toDTO(orderUpdated);
     }
 }

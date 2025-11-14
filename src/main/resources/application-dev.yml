@@ -58,6 +58,10 @@ aws:
   secretKey: ${AWS_SECRET_ACCESS_KEY}
   region: ${AWS_REGION}
   bucketName: ${AWS_S3_BUCKET_NAME}
+
+  queues:
+    model-created: ${AWS_SQS_MODEL_CREATED_QUEUE_URL}
+    model-zip-completed: ${AWS_SQS_MODEL_ZIP_COMPLETED_QUEUE_URL}
   queueUrl: ${AWS_SQS_QUEUE_URL}
 
 management:

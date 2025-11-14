@@ -18,8 +18,8 @@ public class PaymentRepositoryAdapter implements PaymentRepositoryPort {
     private final PaymentPersistentMapper paymentPersistentMapper;
 
     @Override
-    public Payment save(Payment model){
-           PaymentEntity paymentEntity = paymentPersistentMapper.toEntity(model);
+    public Payment save(Payment payment){
+           PaymentEntity paymentEntity = paymentPersistentMapper.toEntity(payment);
            PaymentEntity paymentEntityReturn = paymentJpaRepository.save(paymentEntity);
            return paymentPersistentMapper.toDomain(paymentEntityReturn);
     }
