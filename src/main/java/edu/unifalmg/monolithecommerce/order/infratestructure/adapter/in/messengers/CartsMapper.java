@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 @Mapper(componentModel = "spring")
 public interface CartsMapper {
+
     default CreateOrderCommand toCommand(CartCheckoutEvent cartCheckoutEvent) {
         List<CreateOrderCommand.OrderItemCommand> orderItemCommand = new ArrayList<>();
 

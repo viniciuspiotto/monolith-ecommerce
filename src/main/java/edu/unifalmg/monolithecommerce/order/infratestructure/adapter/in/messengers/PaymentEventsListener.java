@@ -5,6 +5,7 @@ import edu.unifalmg.monolithecommerce.order.application.port.in.UpdateOrderStatu
 import edu.unifalmg.monolithecommerce.payment.domain.model.events.PaymentChangeStatusEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -16,10 +17,11 @@ public class PaymentEventsListener {
     private final PaymentStatusMapper paymentStatusMapper;
     private final UpdateOrderStatusPort updateOrderStatusPort;
 
-    @TransactionalEventListener
+    @EventListener
     public void handlePaymentStatusUpdateEvent(PaymentChangeStatusEvent event) {
 
         try {
+            log.info("Update a order status by payment id: {}", event.orderId());
             UpdateOrderStatusCommand updateOrderStatusCommand = paymentStatusMapper.toCommand(event);
             updateOrderStatusPort.execute(updateOrderStatusCommand);
         } catch (Exception e) {

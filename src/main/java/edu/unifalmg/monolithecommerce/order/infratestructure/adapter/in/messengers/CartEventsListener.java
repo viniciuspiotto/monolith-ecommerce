@@ -5,6 +5,7 @@ import edu.unifalmg.monolithecommerce.order.application.dto.commands.CreateOrder
 import edu.unifalmg.monolithecommerce.order.application.port.in.CreateOrderPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -16,9 +17,8 @@ public class CartEventsListener {
     private final CartsMapper cartsMapper;
     private final CreateOrderPort createOrderPort;
 
-    @TransactionalEventListener
+    @EventListener
     public void handleCartCheckoutEvent(CartCheckoutEvent event) {
-
         try {
              CreateOrderCommand createOrderCommand = cartsMapper.toCommand(event);
              createOrderPort.execute(createOrderCommand);
