@@ -22,7 +22,7 @@ public class SQSZipNotifierAdapter implements ModelNotifierPort {
     public SQSZipNotifierAdapter(
             SqsClient sqsClient,
             ObjectMapper objectMapper,
-            @Value("${aws.queueUrl}") String queueUrl
+            @Value("${aws.queues.model-created}") String queueUrl
     ) {
         this.sqsClient = sqsClient;
         this.objectMapper = objectMapper;

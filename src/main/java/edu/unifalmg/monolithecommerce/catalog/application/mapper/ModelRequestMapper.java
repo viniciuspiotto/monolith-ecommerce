@@ -4,7 +4,6 @@ import edu.unifalmg.monolithecommerce.catalog.application.dto.commands.*;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.UpdateZipKeyModelRequest;
 import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -43,9 +42,6 @@ public interface ModelRequestMapper {
     GetModelCommand toGetCommand(UUID id);
 
     RemoveModelCommand toRemoveCommand(UUID id);
-
-    @Mapping(source = "request.zipFileKey", target = "zipFileKey")
-    UpdateZipKeyCommand toUpdateZipKeyCommand(UUID id, UpdateZipKeyModelRequest request);
 
     default Money bigDecimalToMoney(BigDecimal value) {
         if (value == null) {

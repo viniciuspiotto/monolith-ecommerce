@@ -8,7 +8,6 @@ import edu.unifalmg.monolithecommerce.catalog.application.port.in.*;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.CreateModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.EditModelRequest;
 import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.SearchModelRequest;
-import edu.unifalmg.monolithecommerce.catalog.infrastructure.adapter.in.dto.requests.UpdateZipKeyModelRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +30,6 @@ public class ModelController {
     private final SearchModelsPort searchModelsPort;
     private final GetModelPort getModelPort;
     private final RemoveModelPort removeModelPort;
-    private final UpdateModelZipKeyPort updateModelZipKeyPort;
 
     private final ModelRequestMapper requestMapper;
 
@@ -93,17 +91,5 @@ public class ModelController {
         ModelDTO model = removeModelPort.execute(command);
 
         return ResponseEntity.ok(model);
-    }
-
-    @PatchMapping("/{id}/zip-key")
-    public ResponseEntity<ModelDTO> updateZipKey(
-            @PathVariable UUID id,
-            @Valid @RequestBody UpdateZipKeyModelRequest request
-    ) {
-        UpdateZipKeyCommand command = requestMapper.toUpdateZipKeyCommand(id, request);
-
-        ModelDTO updatedModel = updateModelZipKeyPort.execute(command);
-
-        return ResponseEntity.ok(updatedModel);
     }
 }

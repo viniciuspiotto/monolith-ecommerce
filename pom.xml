@@ -34,7 +34,7 @@
         <java-jwt.version>4.4.0</java-jwt.version>
         <caelum.stella.version>2.1.2</caelum.stella.version>
         <mercado.pago.version>2.5.0</mercado.pago.version>
-        <amazon.awssdk.version>2.38.2</amazon.awssdk.version>
+        <spring.cloud.aws.version>3.4.0</spring.cloud.aws.version>
     </properties>
     <dependencies>
         <dependency>
@@ -133,13 +133,15 @@
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
-            <version>${amazon.awssdk.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sqs</artifactId>
-            <version>${amazon.awssdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.awspring.cloud</groupId>
+            <artifactId>spring-cloud-aws-starter-sqs</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -148,6 +150,13 @@
                 <groupId>org.springframework.modulith</groupId>
                 <artifactId>spring-modulith-bom</artifactId>
                 <version>${spring-modulith.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>io.awspring.cloud</groupId>
+                <artifactId>spring-cloud-aws-dependencies</artifactId>
+                <version>${spring.cloud.aws.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
