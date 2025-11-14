@@ -1,14 +1,8 @@
 package edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in;
 
 import edu.unifalmg.monolithecommerce.cart.application.dtos.CartDTO;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.AddItemToSessionCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.RemoveItemToSessionCartCommand;
-import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToCartPort;
-import edu.unifalmg.monolithecommerce.cart.application.ports.in.AddItemToSessionCartPort;
-import edu.unifalmg.monolithecommerce.cart.application.ports.in.RemoveItemToCartPort;
-import edu.unifalmg.monolithecommerce.cart.application.ports.in.RemoveItemToSessionCartPort;
+import edu.unifalmg.monolithecommerce.cart.application.dtos.commands.*;
+import edu.unifalmg.monolithecommerce.cart.application.ports.in.*;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.AddItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.dtos.requests.RemoveItemRequest;
 import edu.unifalmg.monolithecommerce.cart.infrastructure.adapter.in.mappers.CartRequestMapper;
@@ -32,6 +26,7 @@ public class CartController {
     private final AddItemToSessionCartPort addItemToSessionCartPort;
     private final RemoveItemToCartPort removeItemToCartPort;
     private final RemoveItemToSessionCartPort removeItemToSessionCartPort;
+    private final CheckoutCartPort checkoutCartPort;
 
     private final CartRequestMapper cartRequestMapper;
 
@@ -70,6 +65,7 @@ public class CartController {
         }
 
         return ResponseEntity.ok(updatedCart);
+
     }
 
     @DeleteMapping("/items")
@@ -84,7 +80,6 @@ public class CartController {
         if (authentication != null && authentication.isAuthenticated() && !(authentication instanceof AnonymousAuthenticationToken)) {
             String principal = (String) authentication.getPrincipal();
             log.debug("User is authenticated. Principal (Subject): {}", principal);
-
             UUID customerId;
             try {
                 customerId = UUID.fromString(principal);
@@ -94,7 +89,6 @@ public class CartController {
             }
 
             RemoveItemToCartCommand cmd = cartRequestMapper.toCommand(request, customerId);
-
             updatedCart = removeItemToCartPort.execute(cmd);
             log.info("Removed item from USER cart: {}", updatedCart.cartId());
 
@@ -108,5 +102,22 @@ public class CartController {
         }
 
         return ResponseEntity.ok(updatedCart);
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<?> checkoutCart(
+            Authentication authentication
+    ){
+
+        log.info("Received request to checkout cart:");
+        if (authentication == null || !authentication.isAuthenticated())
+            return ResponseEntity.status(401).body("Authentication required");
+
+        String principal = (String) authentication.getPrincipal();
+        UUID customerId = UUID.fromString(principal);
+        CheckoutCartCommand command = new CheckoutCartCommand(customerId);
+        CartDTO cartDTO = checkoutCartPort.execute(command);
+        return ResponseEntity.ok(cartDTO);
+
     }
 }

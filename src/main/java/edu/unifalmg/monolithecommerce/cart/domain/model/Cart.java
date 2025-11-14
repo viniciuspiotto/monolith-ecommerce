@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
-public class Cart extends AbstractAggregateRoot<Cart> implements Serializable {
+public class Cart implements Serializable {
     private final UUID cartId;
 
     private UUID customerId;
@@ -126,14 +126,6 @@ public class Cart extends AbstractAggregateRoot<Cart> implements Serializable {
         }
         this.status = CartStatus.CHECKED_OUT;
         this.touch();
-
-        this.registerEvent(new CartCheckoutEvent(
-                this.cartId,
-                this.customerId,
-                Collections.unmodifiableSet(this.items),
-                this.getTotalAmount(),
-                this.updatedAt
-        ));
     }
 
     private CartItem findItem(ModelId modelId) {
