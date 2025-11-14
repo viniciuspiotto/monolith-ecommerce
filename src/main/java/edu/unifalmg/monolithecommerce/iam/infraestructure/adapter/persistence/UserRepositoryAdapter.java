@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -22,6 +23,15 @@ public class UserRepositoryAdapter implements UserRepositoryPort {
         UserEntity entityToSave = userPersistenceMapper.toEntity(user);
         UserEntity savedEntity = jpaRepository.save(entityToSave);
         return userPersistenceMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public Optional<User> findById(UUID id) {
+        Optional<UserEntity> userEntityOptional = jpaRepository.findById(id);
+        if (userEntityOptional.isEmpty()) {
+            throw new ResourceNotFoundException("A user with this id not found");
+        }
+        return Optional.of(userPersistenceMapper.toDomain(userEntityOptional.get()));
     }
 
     @Override
