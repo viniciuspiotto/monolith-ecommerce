@@ -11,6 +11,7 @@ import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import edu.unifalmg.monolithecommerce.shared.infraestructure.exception.ResourceNotFoundException;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ public class AddItemToCartUseCase implements AddItemToCartPort {
 
     @Transactional
     @Override
+    @WithSpan("usecase.addItemToCart")
     public CartDTO execute(AddItemToCartCommand cmd) {
 
         return addItemFlowTimer.record(() -> {
