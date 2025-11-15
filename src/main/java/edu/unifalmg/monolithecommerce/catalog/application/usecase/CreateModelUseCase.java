@@ -109,6 +109,8 @@ public class CreateModelUseCase implements CreateModelPort {
             newModel.addTexture(texture);
         }
 
+        newModel.notifyModelUpdated();
+
         Model savedModel = modelRepositoryPort.create(newModel);
 
         ZipRequestPayload payload = new ZipRequestPayload(savedModel.getModelId().id(), s3FileMap);

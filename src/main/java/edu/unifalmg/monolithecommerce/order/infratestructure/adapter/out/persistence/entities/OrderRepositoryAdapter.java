@@ -24,7 +24,7 @@ public class OrderRepositoryAdapter implements OrderRepositoryPort {
     public Optional<Order> findById(UUID orderId){
         Optional<OrderEntity> orderFound = orderJpaRepository.findById(orderId);
         if (orderFound.isEmpty()) {
-            throw new RuntimeException("Order whit this id not found");
+            throw new RuntimeException("Order not found");
         }
         return Optional.of(orderPersistenceMapper.toDomain(orderFound.get()));
     }

@@ -19,7 +19,7 @@ public class GetModelNameByIdUseCase implements GetModelNameByIdPort {
     public String execute(ModelId modelId){
         Optional<Model> model = modelRepository.findById(modelId.id());
         if(model.isEmpty()){
-            throw new IllegalArgumentException("Model whit this id not found");
+            throw new IllegalArgumentException("Model not found");
         }
         return model.get().getTitle();
     }
