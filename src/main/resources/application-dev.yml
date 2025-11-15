@@ -1,12 +1,18 @@
 spring:
-  h2:
-    console:
-      enabled: false
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-    driver-class-name: org.h2.Driver
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
   elasticsearch:
     uris: http://localhost:9200
@@ -18,12 +24,6 @@ spring:
       repositories:
         enabled: true
       password: monolithPassword123
-
-  jpa:
-    open-in-view: false
-    hibernate:
-      ddl-auto: create-drop
-    show-sql: false
 
   servlet:
     multipart:
@@ -62,7 +62,6 @@ aws:
   queues:
     model-created: ${AWS_SQS_MODEL_CREATED_QUEUE_URL}
     model-zip-completed: ${AWS_SQS_MODEL_ZIP_COMPLETED_QUEUE_URL}
-  queueUrl: ${AWS_SQS_QUEUE_URL}
 
 management:
   endpoints:

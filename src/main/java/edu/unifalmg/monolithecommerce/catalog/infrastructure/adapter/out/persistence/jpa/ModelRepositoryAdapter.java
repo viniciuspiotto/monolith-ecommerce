@@ -60,4 +60,9 @@ public class ModelRepositoryAdapter implements ModelRepositoryPort {
 
         return modelPersistenceMapper.toDomain(entityToRemove);
     }
+
+    @Override
+    public long count() {
+        return jpaRepository.count();
+    }
 }

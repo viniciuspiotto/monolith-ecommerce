@@ -1,4 +1,16 @@
 services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=3d-ecommerce
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
   elasticsearch:
     image: elasticsearch:9.2.0
     container_name: elasticsearch_dev
@@ -35,6 +47,10 @@ services:
       - "9090:9090"
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
 
   grafana:
     image: grafana/grafana:latest
@@ -52,4 +68,7 @@ volumes:
     driver: local
 
   redis_data_dev:
+    driver: local
+
+  postgres_data:
     driver: local

@@ -1,7 +1,9 @@
 package edu.unifalmg.monolithecommerce.catalog.infrastructure.startup;
 
+import com.github.javafaker.Faker;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.CategoryRepositoryPort;
 import edu.unifalmg.monolithecommerce.catalog.application.port.out.ModelRepositoryPort;
+import edu.unifalmg.monolithecommerce.catalog.domain.event.ModelUpdatedEvent;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Category;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.Model;
 import edu.unifalmg.monolithecommerce.catalog.domain.model.vo.Mesh;
@@ -11,11 +13,12 @@ import edu.unifalmg.monolithecommerce.shared.domain.model.Money;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -25,47 +28,75 @@ public class CatalogInitializer implements CommandLineRunner {
     private final ModelRepositoryPort modelRepositoryPort;
     private final CategoryRepositoryPort categoryRepositoryPort;
 
+    private final ApplicationEventPublisher applicationEventPublisher;
+
+    private final Faker faker = new Faker(Locale.ENGLISH);
+
+    private static final int NUMBER_OF_CATEGORIES_TO_CREATE = 5;
+    private static final int NUMBER_OF_MODELS_TO_CREATE = 1000;
+
     @Override
+    @Transactional
     public void run(String... args) throws Exception {
-        UUID categoryId1 = createCategoryIfNotFound(
-                "Sci-fi",
-                "Scenarios related to fiction"
-        );
 
-        UUID categoryId2 = createCategoryIfNotFound(
-                "Fantasy",
-                "Scenarios related to fantasy"
-        );
+        if (modelRepositoryPort.count() > 0) {
+            log.info("Database already seeded. Skipping fake data generation.");
+            return;
+        }
 
-        UUID modelId1 = createModelIfNotFound(
-                "Low-poly Spaceship",
-                "A low-poly model of a sci-fi spaceship, ready for games.",
-                new Money(new BigDecimal("19.99")),
-                categoryId1
-        );
+        log.info("Starting database seeding with {} categories and {} models...",
+                NUMBER_OF_CATEGORIES_TO_CREATE, NUMBER_OF_MODELS_TO_CREATE);
 
-        UUID modelId2 = createModelIfNotFound(
-                "Medieval Sword",
-                "A high-quality PBR model of a medieval sword.",
-                new Money(new BigDecimal("9.50")),
-                categoryId2
-        );
+        List<UUID> categoryIds = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_CATEGORIES_TO_CREATE; i++) {
+            String department = faker.commerce().department();
+            UUID categoryId = createCategoryIfNotFound(
+                    department,
+                    "Models and assets related to " + department
+            );
+            categoryIds.add(categoryId);
+        }
+        log.info("{} categories created.", categoryIds.size());
 
-        log.info("Category created: {}", categoryId1);
-        log.info("Category created: {}", categoryId2);
-        log.info("Model created: {}", modelId1);
-        log.info("Model created: {}", modelId2);
+
+        int modelsCreatedCount = 0;
+        for (int i = 0; i < NUMBER_OF_MODELS_TO_CREATE; i++) {
+            String productName = faker.commerce().productName();
+            UUID randomCategoryId = categoryIds.get(faker.number().numberBetween(0, categoryIds.size()));
+
+            UUID modelId = createModelIfNotFound(
+                    productName,
+                    faker.lorem().paragraph(2),
+                    new Money(BigDecimal.valueOf(faker.number().randomDouble(2, 5, 500))),
+                    randomCategoryId
+            );
+            if (modelId != null) {
+                modelsCreatedCount++;
+            }
+        }
+
+        log.info("Database seeding finished. {} models created.", modelsCreatedCount);
     }
 
     private UUID createModelIfNotFound(String title, String description, Money price, UUID categoryId) {
         Optional<Model> modelFounded = modelRepositoryPort.findByTitle(title);
 
         if (modelFounded.isPresent()) {
-            log.warn("Model with title '{}' already exists. Skipping.", title);
-            return modelFounded.get().getModelId().id();
+            log.debug("Model with title '{}' already exists (Faker collision). Skipping.", title);
+            return null;
         }
 
-        String baseName = title.toLowerCase().replaceAll("\\s+", "_");
+        String baseName = title.toLowerCase()
+                .replaceAll("[^a-z0-9\\s]", "")
+                .replaceAll("\\s+", "_");
+
+        if (baseName.length() > 50) {
+            baseName = baseName.substring(0, 50);
+        }
+        if (baseName.isEmpty()) {
+            baseName = "model_" + UUID.randomUUID().toString().substring(0, 8);
+        }
+
 
         Thumbnail thumbnail = Thumbnail.create(
                 baseName + "_thumb.png",
@@ -97,6 +128,12 @@ public class CatalogInitializer implements CommandLineRunner {
         newModel.addTexture(texture);
 
         Model createdModel = modelRepositoryPort.create(newModel);
+
+        UUID id = createdModel.getModelId().id();
+
+        log.debug("publishing modelUpdatedEvent for modelId: {}", id);
+        applicationEventPublisher.publishEvent(new ModelUpdatedEvent(id));
+
         return createdModel.getModelId().id();
     }
 
@@ -104,7 +141,7 @@ public class CatalogInitializer implements CommandLineRunner {
         Optional<Category> categoryFounded = categoryRepositoryPort.findByName(name);
 
         if (categoryFounded.isPresent()) {
-            log.warn("Category with name '{}' already exists. Skipping.", name);
+            log.debug("Category with name '{}' already exists (Faker collision). Skipping.", name);
             return categoryFounded.get().getCategoryId().id();
         }
 

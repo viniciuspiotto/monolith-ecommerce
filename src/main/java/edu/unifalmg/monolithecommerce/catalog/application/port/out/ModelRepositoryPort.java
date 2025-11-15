@@ -11,4 +11,5 @@ public interface ModelRepositoryPort {
     Optional<Model> findByTitle(String title);
     Model update(Model model);
     Model delete(Model model);
+    long count();
 }
