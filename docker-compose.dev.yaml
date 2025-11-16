@@ -1,0 +1,74 @@
+services:
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres_dev
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=3d-ecommerce
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  elasticsearch:
+    image: elasticsearch:9.2.0
+    container_name: elasticsearch_dev
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elastic_data_dev:/usr/share/elasticsearch/data
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    command: redis-server --requirepass monolithPassword123
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger_dev
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_dev
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana-provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - jaeger
+
+volumes:
+  elastic_data_dev:
+    driver: local
+
+  redis_data_dev:
+    driver: local
+
+  postgres_data:
+    driver: local

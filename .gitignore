@@ -2,6 +2,9 @@
 *.log
 logs/
 
+# upload files
+uploads/
+
 # environments
 .env
 *.env
@@ -26,7 +29,6 @@ release.properties
 *.iml
 *.iws
 *.ipr
-out/
 
 # eclipse
 .project
@@ -47,3 +49,12 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
+
+# terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json

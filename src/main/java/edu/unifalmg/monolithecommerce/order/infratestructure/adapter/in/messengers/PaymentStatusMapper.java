@@ -1,0 +1,28 @@
+package edu.unifalmg.monolithecommerce.order.infratestructure.adapter.in.messengers;
+
+
+import edu.unifalmg.monolithecommerce.order.application.dto.commands.UpdateOrderStatusCommand;
+import edu.unifalmg.monolithecommerce.order.domain.model.enums.OrderStatus;
+import edu.unifalmg.monolithecommerce.payment.domain.model.enums.PaymentStatus;
+import edu.unifalmg.monolithecommerce.order.infratestructure.api.PaymentChangeStatusEvent;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface PaymentStatusMapper {
+
+    default UpdateOrderStatusCommand toCommand (PaymentChangeStatusEvent event){
+        return new UpdateOrderStatusCommand(
+                event.orderId(),
+                this.toOrderStatus(event.paymentStatus()));
+    }
+
+    default OrderStatus toOrderStatus(String paymentStatus) {
+        return switch (paymentStatus) {
+            case "WAITING" -> OrderStatus.PROCESSING;
+            case "APPROVED" -> OrderStatus.COMPLETED;
+            case "REJECTED" -> OrderStatus.CANCELLED;
+            default -> throw new IllegalArgumentException("Status of payment is not possible");
+        };
+    }
+
+}
