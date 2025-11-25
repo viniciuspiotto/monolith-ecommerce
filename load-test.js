@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Counter } from 'k6/metrics';
 
-const BASE_URL = 'http://localhost:8080/api/v1';
+const BASE_URL = 'http://localhost:8082/api/v1';
 
 const errorRate = new Counter('error_rate');
 
@@ -51,7 +51,7 @@ export function searchModels() {
 
 export function addToCart() {
     const payload = JSON.stringify({
-        modelId: '79477ff3-f08d-446c-9f87-5f705b35e297',
+        modelId: 'cb121623-e9aa-472a-a629-f8155888681d',
         quantity: 1
     });
 

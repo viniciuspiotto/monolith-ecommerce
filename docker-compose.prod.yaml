@@ -1,0 +1,156 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis_dev
+    ports:
+      - "${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass ${REDIS_PASSWORD:-monolithPassword123}
+    networks:
+      - main-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-monolithPassword123}", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  elasticsearch:
+    image: elasticsearch:8.10.2
+    container_name: elasticsearch
+    deploy:
+      resources:
+        limits:
+          memory: 1GB
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+      - "9300:9300"
+    volumes:
+      - elastic_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - main-network
+
+  postgres:
+    image: postgres:15.3
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRESQL_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD:-postgres}
+      - POSTGRES_DB=monolith_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - main-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRESQL_USERNAME:-postgres} -d monolith_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  monolith:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: monolith-service
+    ports:
+      - "${MONOLITH_PORT:-8082}:${MONOLITH_PORT:-8082}"
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - SERVER_PORT=${MONOLITH_PORT:-8082}
+      - MONOLITH_VERSION=${MONOLITH_VERSION}
+      - REDIS_HOST=${REDIS_HOST:-redis_dev}
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-monolithPassword123}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - ELASTICSEARCH_URIS=${ELASTICSEARCH_URIS:-http://elasticsearch:9200}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION}
+      - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME}
+      - AWS_SQS_MODEL_CREATED_QUEUE_URL=${AWS_SQS_MODEL_CREATED_QUEUE_URL}
+      - AWS_SQS_MODEL_ZIP_COMPLETED_QUEUE_URL=${AWS_SQS_MODEL_ZIP_COMPLETED_QUEUE_URL}
+      - POSTGRESQL_URL=jdbc:postgresql://postgres:5432/monolith_db
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME:-postgres}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD:-postgres}
+      - MERCADO_PAGO_ACCESS_TOKEN=${MERCADO_PAGO_ACCESS_TOKEN}
+      - MERCADO_PAGO_NOTIFICATION_URL=${MERCADO_PAGO_NOTIFICATION_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_EXPIRATION_HOURS=${JWT_EXPIRATION_HOURS}
+      - JWT_COOKIE_SECURE=${JWT_COOKIE_SECURE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - main-network
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger_dev
+    ports:
+      - "16686:16686"
+      - "4318:4318"
+    networks:
+      - main-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_dev
+    ports:
+      - "9095:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    networks:
+      - main-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana-provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+      - jaeger
+    networks:
+      - main-network
+
+networks:
+  main-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  elastic_data:
+    driver: local

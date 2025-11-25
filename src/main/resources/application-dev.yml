@@ -1,38 +1,38 @@
 spring:
+  mvc:
+    servlet:
+      path: /api/${MONOLITH_VERSION}
+
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${POSTGRESQL_URL}
+    username: ${POSTGRESQL_USERNAME}
+    password: ${POSTGRESQL_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
   elasticsearch:
-    uris: http://localhost:9200
+    uris: ${ELASTICSEARCH_URIS}
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       repositories:
         enabled: true
-      password: monolithPassword123
+      password: ${REDIS_PASSWORD}
 
   servlet:
     multipart:
       max-file-size: 50MB
       max-request-size: 150MB
-
-  mvc:
-    servlet:
-      path: /api/v1
 
 api:
   security:
@@ -45,6 +45,7 @@ api:
       secure: ${JWT_COOKIE_SECURE}
 
 server:
+  port: ${SERVER_PORT:-8082}
   servlet:
     session:
       timeout: 30m
@@ -82,7 +83,7 @@ otel:
 
   exporter:
     otlp:
-      endpoint: http://localhost:4318
+      endpoint: http://jaeger:4318
 
   logs:
     exporter: none

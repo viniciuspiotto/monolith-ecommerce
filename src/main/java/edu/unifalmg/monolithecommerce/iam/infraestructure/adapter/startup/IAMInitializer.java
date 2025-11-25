@@ -25,6 +25,10 @@ public class IAMInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        if (UserRepositoryPort.count() > 0) {
+            return;
+        }
+
         CreateRoleCommand createCustomerRole = new CreateRoleCommand("CUSTOMER", "Customer in 3D Shop");
         createRoleUseCase.execute(createCustomerRole);
 

@@ -11,4 +11,5 @@ public interface UserRepositoryPort {
     User findByEmail(String email);
     Optional<User> findById(UUID id);
     Boolean delete (User user);
+    Boolean count();
 }
