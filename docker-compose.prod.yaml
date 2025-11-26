@@ -120,7 +120,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus_dev
     ports:
-      - "9095:9090"
+      - "9010:9090"
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
     extra_hosts:

@@ -11,20 +11,29 @@ export const options = {
         search_models: {
             executor: 'constant-arrival-rate',
             rate: 50,
-            timeUnit: '1s',
+            timeUnit: '2s',
             duration: '2m',
             preAllocatedVUs: 10,
-            maxVUs: 50,
+            maxVUs: 100,
             exec: 'searchModels',
         },
         add_to_cart: {
             executor: 'constant-arrival-rate',
             rate: 10,
-            timeUnit: '1s',
+            timeUnit: '2s',
             duration: '2m',
             preAllocatedVUs: 5,
-            maxVUs: 20,
+            maxVUs: 50,
             exec: 'addToCart',
+        },
+        login: {
+            executor: 'constant-arrival-rate',
+            rate: 10,
+            timeUnit: '5s',
+            duration: '2m',
+            preAllocatedVUs: 5,
+            maxVUs: 50,
+            exec: 'login',
         },
     },
     thresholds: {
@@ -51,7 +60,7 @@ export function searchModels() {
 
 export function addToCart() {
     const payload = JSON.stringify({
-        modelId: 'cb121623-e9aa-472a-a629-f8155888681d',
+        modelId: '3c4aa871-d97b-4103-ac09-bfae2a36ca87',
         quantity: 1
     });
 
@@ -65,6 +74,29 @@ export function addToCart() {
 
     const success = check(res, {
         'add to cart status is 200': (r) => r.status === 200,
+    });
+    if (!success) {
+        errorRate.add(1);
+    }
+    sleep(2);
+}
+
+export function login() {
+    const payload = JSON.stringify({
+        email: 'artist@example.com',
+        password: 'Strong@ss123'
+    });
+
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    };
+
+    const res = http.post(`${BASE_URL}/auth/login`, payload, params);
+
+    const success = check(res, {
+        'login status is 200': (r) => r.status === 200,
     });
     if (!success) {
         errorRate.add(1);

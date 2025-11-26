@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "app_name" {
   description = "Common prefix to resources"
   type = string
-  default = "3d-ecommerce"
+  default = "3d-ecommerce-monolith"
 }
 
 variable "lambda_source_dir" {
